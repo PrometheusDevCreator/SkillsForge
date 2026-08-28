@@ -1,0 +1,14 @@
+# Netlify configuration for SkillsForge — static deploy.
+# The app is a single self-contained page; there is no build step.
+# Netlify serves everything in ui/ as the site root, so ui/index.html -> /.
+[build]
+  publish = "ui"
+  command = ""
+
+# Sensible defaults for a demonstrator.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Content-Type-Options = "nosniff"
