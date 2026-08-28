@@ -1,0 +1,13 @@
+# Python
+engine/.venv/
+__pycache__/
+*.pyc
+
+# Local runtime
+appdata/
+logs/
+~/.skillsforge/
+
+# OS
+.DS_Store
+Thumbs.db
