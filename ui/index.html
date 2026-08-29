@@ -233,7 +233,7 @@
 <footer class="ribbon-bot" dir="ltr">
   <span class="rb-left">PROMETHEUS EDUCATION SYSTEMS</span>
   <span class="rb-centre" id="rbCentre">SKILLSFORGE · INDIVIDUAL</span>
-  <span class="rb-right"><span id="rbMode">DETERMINISTIC · SEED SET</span><span class="rb-dot">●</span><span>v0.4</span></span>
+  <span class="rb-right"><span id="rbMode">DETERMINISTIC · SEED SET</span><span class="rb-dot">●</span><span>v0.5</span></span>
 </footer>
 
 <div id="modalHost"></div>
@@ -390,7 +390,7 @@ const I18N={
   themeLight:"Light",themeDark:"Dark",clearBtn:"Clear",
   seniorityNote:"Indicative level",
   mappedNone:"No seed skills matched — tap them on the left; the full skill set will catch more.",
-  mappedAlready:"matched — all were already selected.",mappedAdded:"added from your text",
+  mappedAlready:"matched — all were already selected.",mappedAdded:"added from your text",mappedLive:"live match",mappedOffline:"offline match",escoAlso:"Also recognised (European skills framework, ESCO)",entOpen:"Open the structured Enterprise app",
   selectedWord:"selected"
  },
  ar:{
@@ -430,7 +430,7 @@ const I18N={
   themeLight:"فاتح",themeDark:"داكن",clearBtn:"مسح",
   seniorityNote:"المستوى الإرشادي",
   mappedNone:"لا مطابقات في المجموعة الأولية — حدد المهارات يساراً؛ المجموعة الكاملة ستلتقط المزيد.",
-  mappedAlready:"مطابقة — وكلها محددة مسبقاً.",mappedAdded:"أُضيفت من نصك",
+  mappedAlready:"مطابقة — وكلها محددة مسبقاً.",mappedAdded:"أُضيفت من نصك",mappedLive:"مطابقة مباشرة",mappedOffline:"مطابقة دون اتصال",escoAlso:"معترف بها أيضاً (الإطار الأوروبي للمهارات ESCO)",entOpen:"افتح تطبيق المؤسسات المنظّم",
   selectedWord:"محددة"
  }
 };
@@ -441,7 +441,9 @@ function mName(l){ return lang==="ar"?MASTERY_AR[l-1].n:MASTERY[l-1].name; }
 function mDesc(l){ return lang==="ar"?MASTERY_AR[l-1].d:MASTERY[l-1].desc; }
 
 /* ====================== STATE / NAV ====================== */
-const state={ step:"landing", backgrounds:[], roleText:"", level:3, skills:{}, freetext:"", seeded:false, target:"mgmt", domain:"all", mappedNote:"" };
+const SB_URL="https://mvadvbymgvmdqxonbmjp.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12YWR2YnltZ3ZtZHF4b25ibWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5ODgxNDQsImV4cCI6MjEwMzU2NDE0NH0.6cOrI_C9lHkS9Ab2wpizyGvai95f2F4ZC6_QPK8jDYs"; /* public anon key by design */
+const state={ step:"landing", backgrounds:[], roleText:"", level:3, skills:{}, freetext:"", seeded:false, target:"mgmt", domain:"all", mappedNote:"", escoHits:[], liveMatch:false };
 const FLOW=["landing","background","level","skills","target","result"];
 function selectedIds(){ return Object.keys(state.skills).filter(id=>state.skills[id]); }
 function seedFromBackground(){ const s={}; for(const b of state.backgrounds){ const bg=BACKGROUNDS.find(x=>x.id===b); if(bg) bg.skills.forEach(id=>s[id]=true);} return s; }
@@ -449,7 +451,7 @@ function stepValid(){ if(state.step==="background")return state.backgrounds.leng
 function navNext(){ const i=FLOW.indexOf(state.step); if(i<FLOW.length-1 && stepValid()) go(FLOW[i+1]); }
 function navBack(){ const i=FLOW.indexOf(state.step); if(i>0) go(FLOW[i-1]); }
 function go(step){ state.step=step; render(); }
-function restartAll(){ Object.assign(state,{step:"landing",backgrounds:[],roleText:"",level:3,skills:{},freetext:"",seeded:false,target:"mgmt",domain:"all",mappedNote:""}); closeModal(); render(); }
+function restartAll(){ Object.assign(state,{step:"landing",backgrounds:[],roleText:"",level:3,skills:{},freetext:"",seeded:false,target:"mgmt",domain:"all",mappedNote:"",escoHits:[],liveMatch:false}); closeModal(); render(); }
 
 function setLang(l){ lang=l; document.documentElement.lang=l; document.documentElement.dir=(l==="ar"?"rtl":"ltr");
   document.getElementById("langEN").classList.toggle("on",l==="en");
@@ -464,7 +466,7 @@ function refreshRibbon(){
   document.getElementById("rtSub").textContent=(i>0&&i<FLOW.length-1)?("0"+i+" / 0"+(FLOW.length-2)):"";
   document.getElementById("navBack").disabled=(i===0);
   document.getElementById("navNext").disabled=(i===FLOW.length-1)||!stepValid();
-  document.getElementById("rbMode").textContent=lang==="ar"?"حتمي · مجموعة أولية":"DETERMINISTIC · SEED SET";
+  document.getElementById("rbMode").textContent=state.liveMatch?(lang==="ar"?"هجين · مطابقة مباشرة":"HYBRID · LIVE MATCH"):(lang==="ar"?"حتمي · مجموعة أولية":"DETERMINISTIC · SEED SET");
 }
 
 /* ====================== RENDER ====================== */
@@ -570,14 +572,34 @@ function vSkills(){
       '<div class="flip-rtl"><div class="side-card"><label class="fl">'+t("ftLabel")+' <span class="optional">('+t("optional")+' — '+t("ftHint")+')</span></label>'+
       '<textarea rows="7" placeholder="'+t("ftPh")+'" oninput="state.freetext=this.value">'+esc(state.freetext)+'</textarea>'+
       '<div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap"><button class="btn gold" onclick="mapFreetext()">'+t("mapBtn")+'</button>'+
-      '<span style="font-size:11.5px;color:var(--brand-bright);font-weight:600">'+esc(state.mappedNote)+'</span></div></div></div>'+
+      '<span style="font-size:11.5px;color:var(--brand-bright);font-weight:600">'+esc(state.mappedNote)+'</span></div>'+
+      (state.escoHits&&state.escoHits.length? '<div style="margin-top:12px"><label class="fl">'+t("escoAlso")+'</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">'+state.escoHits.map(function(m){return '<span style="font-size:11px;padding:4px 10px;border:1px solid var(--line);border-radius:20px;color:var(--muted)">'+esc(m.name_en)+' <b style="color:var(--brand-bright)">'+Math.round(m.similarity*100)+'%</b></span>';}).join("")+'</div></div>':"")+'</div></div>'+
     '</div></div>'+
     actions("level","target","cont",count>0);
 }
 function toggleSkill(id){ state.skills[id]=!state.skills[id]; render(); }
-function mapFreetext(){ const hits=extractSkills(state.freetext+" "+state.roleText);
-  let added=0; for(const h of hits){ if(!state.skills[h.id]){ state.skills[h.id]=true; added++; } }
-  state.mappedNote = hits.length? (added? added+" "+t("mappedAdded")+" ("+hits.length+")" : hits.length+" "+t("mappedAlready")) : t("mappedNone");
+async function mapFreetext(){
+  const text=(state.freetext+" "+state.roleText).trim();
+  if(!text){ state.mappedNote=t("mappedNone"); render(); return; }
+  state.mappedNote="\u2026"; render();
+  try{
+    const r=await fetch(SB_URL+"/functions/v1/match",{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+SB_KEY,"apikey":SB_KEY},
+      body:JSON.stringify({text:text,count:14,min_similarity:0.74})});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json(); const matches=d.matches||[];
+    let tax=0, added=0;
+    for(const m of matches){ if(m.similarity>=0.78 && TAXONOMY.some(s=>s.id===m.id)){ tax++; if(!state.skills[m.id]){ state.skills[m.id]=true; added++; } } }
+    state.escoHits=matches.filter(m=>String(m.id).indexOf("esco:")===0 && m.similarity>=0.76).slice(0,6);
+    state.liveMatch=true;
+    state.mappedNote=(tax? (added? added+" "+t("mappedAdded")+" ("+tax+")" : tax+" "+t("mappedAlready")) : t("mappedNone"))+" \u00b7 "+t("mappedLive");
+  }catch(e){
+    const hits=extractSkills(text);
+    let added=0; for(const h of hits){ if(!state.skills[h.id]){ state.skills[h.id]=true; added++; } }
+    state.liveMatch=false; state.escoHits=[];
+    state.mappedNote=(hits.length? (added? added+" "+t("mappedAdded")+" ("+hits.length+")" : hits.length+" "+t("mappedAlready")) : t("mappedNone"))+" \u00b7 "+t("mappedOffline");
+  }
+  if(state.liveMatch){ const rb=document.getElementById("rbMode"); if(rb) rb.textContent=(lang==="ar"?"\u0647\u062c\u064a\u0646 \u00b7 \u0645\u0637\u0627\u0628\u0642\u0629 \u0645\u0628\u0627\u0634\u0631\u0629":"HYBRID \u00b7 LIVE MATCH"); }
   render();
 }
 
@@ -627,7 +649,7 @@ function vResult(){
 /* ====================== MODALS ====================== */
 function openModal(kind){
   let html="";
-  if(kind==="enterprise") html='<h3>'+t("entTitle")+'</h3><p>'+t("entBody")+'</p>';
+  if(kind==="enterprise") html='<h3>'+t("entTitle")+'</h3><p>'+t("entBody")+'</p><p style="margin-top:12px"><a class="btn" href="classic.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">'+t("entOpen")+'</a></p>';
   if(kind==="levels") html='<h3>'+t("levelInfoT")+'</h3>'+MASTERY.map((m,i)=>'<p style="margin:7px 0"><b style="color:var(--brand-bright)">'+(i+1)+' · '+mName(i+1)+'</b> <span style="font-size:10px;color:var(--gold)">'+m.qfe+'</span><br>'+mDesc(i+1)+'</p>').join("");
   if(kind==="sugg") html='<h3>'+t("skillsInfoT")+'</h3><p>'+t("skillsInfoB")+'</p>';
   if(kind==="settings") html='<h3>'+t("setTitle")+'</h3>'+
