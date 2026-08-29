@@ -46,7 +46,7 @@ img.mark{height:22px;width:22px;object-fit:contain}
 <div class="ribbon"><span style="display:flex;gap:10px;align-items:center"><img class="mark" id="brandMark" alt="" style="display:none">PROMETHEUS · SKILLSFORGE</span><span class="r">ACCEPTANCE RUNNER</span></div>
 <main>
   <h1>Acceptance test runner</h1>
-  <div class="sub">Automated backend checks run against the live SkillsForge services, plus the manual walkthrough for the wizard itself. App under test: <a href="index.html">index.html</a> · legacy: <a href="classic.html">classic.html</a></div>
+  <div class="sub">Automated backend checks run against the live SkillsForge services, plus the manual walkthrough for the wizard itself. App under test: <a href="index.html">SkillsForge console</a> · preview: <a href="wizard.html">Individual wizard</a></div>
 
   <div class="card">
     <h2>Automated checks</h2>
@@ -132,18 +132,19 @@ async function runAll(){
 }
 
 const MANUAL=[
- ["Landing renders","Roundel, both ribbons, EN/AR toggle visible; no broken images"],
- ["Mode wheel","Wheel turns between Individual / Enterprise / About; hub roundel intact"],
- ["Background chips","Selecting service background seeds sensible suggested skills"],
- ["Seniority dial","Dial moves 1–5 and the level label updates"],
- ["Skill bubbles","Bubbles toggle on/off; running count updates"],
- ["Freetext live mapping","Paste role text, Map — note says live match; relevant bubbles auto-select"],
- ["ESCO recognition chips","After mapping rich text, 'Also recognised (ESCO)' chips appear with percentages"],
- ["Offline fallback","(Optional) With network blocked, mapping still works marked offline"],
- ["Arabic toggle","AR flips content RTL with Arabic strings; top/bottom ribbons stay locked EN"],
- ["Target & result","Target step works; result shows matrix, alignment %, suggested roles"],
- ["Print / export","Print view is clean (dark chrome dropped, content legible)"],
- ["Classic app link","Enterprise modal links to the structured app (classic.html) and it loads"],
+ ["Landing & login","Landing renders with roundel; entering a name opens the console"],
+ ["Larger labels","Labels, subtitles and helper text read comfortably (sizes up ~15%)"],
+ ["Hover highlights","Chips, tiles, buttons, fields and list rows show border highlights on hover"],
+ ["Guided tooltips","Hovering stage arrows, Run analysis, domain tiles etc. shows tooltips; settings toggle turns them off"],
+ ["Define stage","Domain tiles select/deselect; adviser guidance is tighter but clear"],
+ ["Intake","Paste or upload evidence; specimen loader works"],
+ ["Engine online","Settings shows engine ONLINE, model gte-small \u00b7 SkillsForge Live"],
+ ["Analysis + evidence","Run analysis; each item shows skills with trigger-phrase evidence"],
+ ["AI-assisted live matches","Enable AI-assisted mapping, run on an item \u2014 flagged panel shows semantic ESCO/seed matches with percentages"],
+ ["Translate + ESCO","Translate view renders three registers, then an 'Also recognised (ESCO)' panel appears"],
+ ["Forecast & Advise","Horizon slider updates deltas; recommendations render with priorities"],
+ ["Print report","Print view is clean and complete"],
+ ["Wizard preview","Settings \u2192 Individual wizard (preview) opens wizard.html and it works"],
 ];
 const LSKEY="sf_accept_v1";
 let ticks={}; try{ ticks=JSON.parse(localStorage.getItem(LSKEY)||"{}"); }catch(e){}
