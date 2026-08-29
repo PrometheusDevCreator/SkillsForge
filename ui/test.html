@@ -46,7 +46,7 @@ img.mark{height:22px;width:22px;object-fit:contain}
 <div class="ribbon"><span style="display:flex;gap:10px;align-items:center"><img class="mark" id="brandMark" alt="" style="display:none">PROMETHEUS · SKILLSFORGE</span><span class="r">ACCEPTANCE RUNNER</span></div>
 <main>
   <h1>Acceptance test runner</h1>
-  <div class="sub">Automated backend checks run against the live SkillsForge services, plus the manual walkthrough for the wizard itself. App under test: <a href="index.html">SkillsForge console</a> · preview: <a href="wizard.html">Individual wizard</a></div>
+  <div class="sub">Automated backend checks run against the live SkillsForge services, plus the manual walkthrough for the wizard itself. App under test: <a href="index.html">SkillsForge console</a> · individual: <a href="individual.html">transition portal</a> · preview: <a href="wizard.html">wizard</a></div>
 
   <div class="card">
     <h2>Automated checks</h2>
@@ -132,7 +132,8 @@ async function runAll(){
 }
 
 const MANUAL=[
- ["Landing & login","Landing renders with roundel; entering a name opens the console"],
+ ["Landing & pathway choice","Name entry plus Enterprise / Individual buttons; Enterprise opens the console"],
+ ["Individual pathway","Individual opens the transition portal, name carried through, splash skipped; check it on a phone too"],
  ["Larger labels","Labels, subtitles and helper text read comfortably (sizes up ~15%)"],
  ["Hover highlights","Chips, tiles, buttons, fields and list rows show border highlights on hover"],
  ["Guided tooltips","Hovering stage arrows, Run analysis, domain tiles etc. shows tooltips; settings toggle turns them off"],
