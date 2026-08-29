@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-title" content="Transition Portal">
+<title>UAE MoD — Transition to Civilian Programme V2</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1;
+  --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155;
+  --slate-800: #1e293b; --slate-900: #0f172a; --white: #ffffff;
+  --uae-red: #c8102e; --uae-red-soft: #e8354f; --uae-green: #00864a; --uae-green-soft: #10b068;
+  --uae-green-light: #e6f5ed; --uae-red-light: #fce8ec; --accent-gold: #d4a843;
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-body: 'Outfit', -apple-system, sans-serif;
+  --font-ar: 'Tahoma', 'Segoe UI', sans-serif;
+}
+html { font-size: 15px; }
+html[dir="rtl"] { direction: rtl; }
+html[dir="rtl"] body { font-family: var(--font-ar); }
+body { font-family: var(--font-body); background: var(--slate-50); color: var(--slate-800); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+/* ═══ SPLASH ═══ */
+.splash-screen { min-height: 100vh; display: flex; flex-direction: column; background: linear-gradient(145deg, var(--slate-900) 0%, var(--slate-800) 50%, var(--slate-700) 100%); position: relative; overflow: hidden; }
+.splash-screen::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--uae-green) 0%, var(--uae-green) 33%, var(--white) 33%, var(--white) 50%, var(--slate-900) 50%, var(--slate-900) 67%, var(--uae-red) 67%); }
+.splash-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3rem; text-align: center; position: relative; z-index: 1; }
+.splash-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 0.4rem 1.2rem; font-size: 0.75rem; color: var(--slate-400); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2rem; }
+.splash-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--uae-green-soft); animation: pulse-dot 2s ease infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.splash-title { font-family: var(--font-display); font-size: 3rem; font-weight: 600; color: var(--white); line-height: 1.15; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+.splash-subtitle { font-size: 1.1rem; color: var(--slate-400); font-weight: 300; margin-bottom: 2rem; max-width: 520px; }
+.splash-version { font-size: 0.7rem; color: var(--slate-500); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2.5rem; }
+
+/* Role Selection */
+.role-cards { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
+.role-card { width: 180px; padding: 1.5rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; cursor: pointer; transition: all 0.3s; text-align: center; }
+.role-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+.role-card.selected { background: rgba(255,255,255,0.1); border-color: var(--uae-green-soft); box-shadow: 0 0 0 1px var(--uae-green-soft); }
+.role-icon { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--slate-300); }
+.role-card.selected .role-icon { color: var(--uae-green-soft); }
+.role-label { font-size: 0.85rem; font-weight: 600; color: var(--slate-300); letter-spacing: 0.05em; }
+.role-card.selected .role-label { color: var(--white); }
+.role-sublabel { font-size: 0.7rem; color: var(--slate-500); margin-top: 0.25rem; }
+
+.splash-pin { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+.splash-pin input { width: 48px; height: 52px; text-align: center; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: var(--white); font-size: 1.2rem; font-family: var(--font-body); outline: none; }
+.splash-pin input:focus { border-color: var(--uae-green-soft); background: rgba(255,255,255,0.1); }
+.splash-enter { display: inline-flex; align-items: center; gap: 0.75rem; background: var(--white); color: var(--slate-900); border: none; padding: 0.85rem 2.2rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em; opacity: 0.4; pointer-events: none; }
+.splash-enter.ready { opacity: 1; pointer-events: auto; }
+.splash-enter.ready:hover { background: var(--slate-200); transform: translateY(-1px); }
+.splash-error { color: var(--uae-red-soft); font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.2em; }
+
+.splash-footer { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); color: var(--slate-500); font-size: 0.75rem; }
+.lang-toggle { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--slate-400); padding: 0.35rem 1rem; border-radius: 6px; font-family: var(--font-body); font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+.lang-toggle:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+/* ═══ APP LAYOUT ═══ */
+.app-layout { display: flex; min-height: 100vh; }
+.sidebar { width: 260px; background: var(--slate-900); color: var(--white); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; border-right: 1px solid rgba(255,255,255,0.06); }
+html[dir="rtl"] .sidebar { left: auto; right: 0; border-right: none; border-left: 1px solid rgba(255,255,255,0.06); }
+.sidebar-header { padding: 1.25rem 1.25rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.sidebar-logo { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--white); line-height: 1.2; }
+.sidebar-logo-sub { font-size: 0.65rem; color: var(--slate-500); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.15rem; }
+.sidebar-lang { display: flex; gap: 4px; margin-top: 0.5rem; }
+.sidebar-lang button { flex: 1; padding: 4px 8px; font-size: 0.65rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--slate-400); border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.sidebar-lang button.active { background: rgba(255,255,255,0.1); color: var(--white); border-color: rgba(255,255,255,0.2); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 0.75rem 0; }
+.nav-section-label { font-size: 0.6rem; font-weight: 700; color: var(--slate-500); letter-spacing: 0.12em; text-transform: uppercase; padding: 0.75rem 1.25rem 0.35rem; }
+.nav-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 1.25rem; font-size: 0.8rem; color: var(--slate-400); cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; }
+html[dir="rtl"] .nav-item { border-left: none; border-right: 2px solid transparent; }
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--white); background: rgba(255,255,255,0.06); border-left-color: var(--uae-green-soft); }
+html[dir="rtl"] .nav-item.active { border-left-color: transparent; border-right-color: var(--uae-green-soft); }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-check { margin-left: auto; color: var(--uae-green-soft); font-size: 0.7rem; }
+html[dir="rtl"] .nav-check { margin-left: 0; margin-right: auto; }
+.nav-badge { margin-left: auto; background: var(--uae-red-soft); color: var(--white); font-size: 0.55rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+html[dir="rtl"] .nav-badge { margin-left: 0; margin-right: auto; }
+.sidebar-user { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.75rem; }
+.sidebar-avatar { width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, var(--uae-green) 0%, var(--uae-green-soft) 100%); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--white); }
+.sidebar-avatar.admin { background: linear-gradient(135deg, var(--accent-gold) 0%, #b8941f 100%); }
+.sidebar-avatar.partner { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+.sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: var(--white); }
+.sidebar-user-role { font-size: 0.65rem; color: var(--slate-500); }
+
+.main-content { margin-left: 260px; flex: 1; min-height: 100vh; }
+html[dir="rtl"] .main-content { margin-left: 0; margin-right: 260px; }
+
+/* ═══ PAGE CONTENT ═══ */
+.page-header { padding: 2rem 2rem 0.5rem; }
+.page-breadcrumb { font-size: 0.65rem; color: var(--slate-400); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+.page-title { font-family: var(--font-display); font-size: 1.65rem; font-weight: 600; color: var(--slate-900); line-height: 1.2; }
+.page-desc { font-size: 0.85rem; color: var(--slate-500); margin-top: 0.35rem; max-width: 600px; }
+.page-body { padding: 1.25rem 2rem 2rem; }
+
+/* Cards */
+.card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 0.95rem; font-weight: 600; color: var(--slate-800); }
+.card-subtitle { font-size: 0.75rem; color: var(--slate-500); margin-top: 0.15rem; }
+
+/* Metrics */
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+.metric-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 1rem 1.25rem; position: relative; overflow: hidden; }
+.metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--uae-green-soft); }
+.metric-card.gold::before { background: var(--accent-gold); }
+.metric-card.red::before { background: var(--uae-red-soft); }
+.metric-card.slate::before { background: var(--slate-600); }
+.metric-val { font-size: 1.75rem; font-weight: 700; color: var(--slate-900); line-height: 1; font-variant-numeric: tabular-nums; }
+.metric-lbl { font-size: 0.7rem; color: var(--slate-500); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+
+/* Forms */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-label { font-size: 0.75rem; font-weight: 600; color: var(--slate-600); }
+.form-input, .form-select { padding: 0.6rem 0.75rem; border: 1px solid var(--slate-200); border-radius: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--slate-800); background: var(--white); outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-select:focus { border-color: var(--uae-green-soft); }
+
+/* Progress */
+.progress-bar-track { height: 6px; background: var(--slate-100); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.progress-green { background: linear-gradient(90deg, var(--uae-green) 0%, var(--uae-green-soft) 100%); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+.btn-primary { background: var(--slate-900); color: var(--white); }
+.btn-primary:hover { background: var(--slate-700); }
+.btn-secondary { background: var(--slate-100); color: var(--slate-700); }
+.btn-green { background: var(--uae-green); color: var(--white); }
+.btn-green:hover { background: #006d3b; }
+
+/* Info banner */
+.info-banner { display: flex; gap: 0.75rem; padding: 0.85rem 1rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; margin-bottom: 1rem; font-size: 0.8rem; color: var(--slate-700); align-items: flex-start; }
+
+/* Pathway cards */
+.pathway-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.pathway-card { background: var(--white); border: 2px solid var(--slate-200); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s; position: relative; text-align: center; }
+.pathway-card:hover { border-color: var(--slate-300); }
+.pathway-card.selected { border-color: var(--uae-green); background: var(--uae-green-light); }
+.pathway-title { font-size: 1rem; font-weight: 700; color: var(--slate-800); margin: 0.75rem 0 0.35rem; }
+.pathway-desc { font-size: 0.78rem; color: var(--slate-500); line-height: 1.5; }
+
+/* Assessment */
+.question-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 1.5rem; }
+.question-text { font-size: 1rem; font-weight: 600; color: var(--slate-800); margin-bottom: 0.5rem; }
+.option-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.option-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border: 1px solid var(--slate-200); border-radius: 8px; cursor: pointer; transition: all 0.15s; font-size: 0.85rem; }
+.option-item:hover { border-color: var(--slate-300); background: var(--slate-50); }
+.option-item.selected { border-color: var(--uae-green); background: var(--uae-green-light); }
+.option-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--slate-300); flex-shrink: 0; position: relative; }
+.option-item.selected .option-radio { border-color: var(--uae-green); }
+.option-item.selected .option-radio::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--uae-green); }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 24px; }
+html[dir="rtl"] .timeline { padding-left: 0; padding-right: 24px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: var(--slate-200); }
+html[dir="rtl"] .timeline::before { left: auto; right: 6px; }
+.timeline-item { position: relative; margin-bottom: 1.5rem; }
+.timeline-dot { position: absolute; left: -21px; top: 4px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--uae-green-soft); background: var(--white); }
+html[dir="rtl"] .timeline-dot { left: auto; right: -21px; }
+.timeline-dot.current { background: var(--uae-green-soft); }
+.timeline-month { font-size: 0.65rem; font-weight: 700; color: var(--uae-green); letter-spacing: 0.1em; text-transform: uppercase; }
+.timeline-title { font-size: 0.9rem; font-weight: 600; color: var(--slate-800); margin: 0.1rem 0; }
+.timeline-desc { font-size: 0.78rem; color: var(--slate-500); line-height: 1.5; }
+
+/* Plan card (gradient) */
+.plan-card { background: linear-gradient(135deg, var(--slate-800) 0%, var(--slate-700) 100%); border-radius: 14px; padding: 1.5rem; color: var(--white); margin-bottom: 1rem; position: relative; overflow: hidden; }
+.plan-card::after { content: ''; position: absolute; top: -30%; right: -10%; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(16,176,104,0.08) 0%, transparent 70%); }
+.plan-card-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; }
+.plan-card-subtitle { font-size: 0.8rem; color: var(--slate-400); margin-top: 0.25rem; }
+
+/* Chat / AI Mentor */
+.chat-container { display: flex; flex-direction: column; height: calc(100vh - 200px); max-height: 600px; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.chat-msg { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; animation: msgIn 0.3s ease; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.chat-msg.user { align-self: flex-end; background: var(--slate-800); color: var(--white); border-bottom-right-radius: 4px; }
+html[dir="rtl"] .chat-msg.user { border-bottom-right-radius: 12px; border-bottom-left-radius: 4px; }
+.chat-msg.ai { align-self: flex-start; background: var(--uae-green-light); color: var(--slate-800); border-bottom-left-radius: 4px; }
+html[dir="rtl"] .chat-msg.ai { border-bottom-left-radius: 12px; border-bottom-right-radius: 4px; }
+.chat-msg.ai .msg-label { font-size: 0.65rem; font-weight: 700; color: var(--uae-green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+.chat-msg.typing { background: var(--uae-green-light); color: var(--slate-500); font-style: italic; }
+.chat-input-bar { display: flex; gap: 0.5rem; padding: 1rem; border-top: 1px solid var(--slate-200); background: var(--white); }
+.chat-input { flex: 1; padding: 0.65rem 0.85rem; border: 1px solid var(--slate-200); border-radius: 8px; font-family: var(--font-body); font-size: 0.85rem; outline: none; resize: none; min-height: 40px; max-height: 100px; }
+.chat-input:focus { border-color: var(--uae-green-soft); }
+.chat-send { padding: 0.65rem 1rem; background: var(--uae-green); color: var(--white); border: none; border-radius: 8px; font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.chat-send:hover { background: #006d3b; }
+.chat-send:disabled { opacity: 0.4; cursor: default; }
+
+/* Skills Translation */
+.skill-map { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center; margin-top: 0.75rem; }
+.skill-mil { padding: 0.6rem 0.85rem; background: var(--slate-100); border-radius: 8px; font-size: 0.8rem; font-weight: 500; color: var(--slate-700); }
+.skill-arrow { color: var(--uae-green); font-size: 1.2rem; }
+.skill-civ { padding: 0.6rem 0.85rem; background: var(--uae-green-light); border-radius: 8px; font-size: 0.8rem; font-weight: 500; color: var(--uae-green); }
+
+/* Admin table */
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.admin-table th { background: var(--slate-800); color: var(--white); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.65rem 0.85rem; text-align: left; }
+html[dir="rtl"] .admin-table th { text-align: right; }
+.admin-table td { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--slate-100); }
+.admin-table tr:hover td { background: var(--slate-50); }
+.status-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.status-tag.active { background: var(--uae-green-light); color: var(--uae-green); }
+.status-tag.pending { background: #FFF8E1; color: #B8860B; }
+.status-tag.complete { background: #E3F2FD; color: #1565C0; }
+
+/* Likert */
+.likert-scale { display: flex; gap: 0.75rem; }
+.likert-option { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; cursor: pointer; }
+.likert-circle { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--slate-200); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--slate-400); transition: all 0.15s; }
+.likert-option:hover .likert-circle { border-color: var(--slate-400); }
+.likert-option.selected .likert-circle { border-color: var(--uae-green); background: var(--uae-green); color: var(--white); }
+.likert-label { font-size: 0.6rem; color: var(--slate-400); }
+
+/* Results meters */
+.result-meter { margin-bottom: 0.6rem; }
+.result-meter-label { font-size: 0.78rem; font-weight: 500; color: var(--slate-700); margin-bottom: 0.2rem; }
+.result-meter-bar { height: 8px; background: var(--slate-100); border-radius: 4px; overflow: hidden; }
+.result-meter-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.result-meter-value { font-size: 0.7rem; color: var(--slate-500); margin-top: 0.1rem; text-align: right; }
+
+/* Upload */
+.upload-zone { border: 2px dashed var(--slate-200); border-radius: 10px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.upload-zone:hover { border-color: var(--slate-300); background: var(--slate-50); }
+
+/* Resource cards */
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+.resource-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 1.25rem; transition: all 0.2s; cursor: pointer; }
+.resource-card:hover { border-color: var(--slate-300); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.resource-card-title { font-size: 0.85rem; font-weight: 600; color: var(--slate-800); margin-top: 0.5rem; }
+.resource-card-desc { font-size: 0.75rem; color: var(--slate-500); margin-top: 0.25rem; }
+
+/* Animations */
+.animate-in { animation: slideUp 0.4s ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Results grid */
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+@media (max-width: 768px) {
+  .sidebar { width: 100%; position: relative; }
+  .main-content { margin-left: 0 !important; margin-right: 0 !important; }
+  .form-grid { grid-template-columns: 1fr; }
+  .pathway-grid { grid-template-columns: 1fr; }
+  .results-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- SkillsForge mobile & iOS optimisation ---- */
+html{-webkit-text-size-adjust:100%}
+*{-webkit-tap-highlight-color:transparent}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+.sidebar{padding-top:env(safe-area-inset-top)}
+@media (max-width: 768px){
+  input,select,textarea{font-size:16px !important}
+  button,.sidebar a,.nav-item{min-height:44px}
+  .main-content{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .main-content table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .splash-enter{min-height:48px;font-size:16px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// INTERNATIONALISATION
+// ═══════════════════════════════════════════════════
+const T = {
+  en: {
+    splashBadge: "Ministry of Defence — United Arab Emirates",
+    splashTitle: "Transition to<br>Civilian Programme",
+    splashSub: "Your 12-month pathway from distinguished military service to a successful civilian career.",
+    splashVersion: "V2.0 — AI-Enhanced Platform",
+    selectRole: "Select your role to continue",
+    roleCandidate: "Candidate", roleCandidateSub: "Transition participant",
+    roleAdmin: "Administrator", roleAdminSub: "Programme management",
+    rolePartner: "Partner", rolePartnerSub: "Employer / Institution",
+    enterPin: "Enter PIN", enter: "Enter Programme", invalidPin: "Invalid PIN. Please try again.",
+    langBtn: "العربية",
+    // Sidebar
+    sideOnboarding: "Onboarding", sideDashboard: "Dashboard", sideProfile: "Personal Details",
+    sideDocs: "Documents", sideProgramme: "Programme Overview", sidePathways: "Choose Pathway",
+    sideAssessment: "Assessment", sidePersonality: "Personal Qualities", sideEnglish: "English Language",
+    sideTechnical: "Technical Skills", sideResults: "My Profile Results",
+    sideJourney: "My Journey", sidePlan: "Transition Plan", sideSkills: "Skills Translation",
+    sideMentor: "AI Career Mentor", sideResources: "Resources", sideWellbeing: "Wellbeing",
+    // Admin sidebar
+    sideAdminDash: "Cohort Dashboard", sideCandidates: "Candidates", sideEmployers: "Employers", sideReports: "Reports",
+    // Common
+    home: "Home", back: "Back", next: "Next", save: "Save", continue_: "Continue",
+    complete: "Complete", cancel: "Cancel",
+    copyright: "2026 UAE Ministry of Defence. All rights reserved.",
+    // Dashboard
+    welcomeTitle: "Welcome to Your Transition",
+    welcomeDesc: "Complete the orientation tasks below to build your transition profile.",
+    day1Title: "Day 1 — Orientation",
+    day1Sub: "Complete your profile, upload documents, and take your initial assessments.",
+    progress: "Progress",
+    // Profile
+    profileTitle: "Personal Details", profileDesc: "Your military service record and contact information.",
+    fullName: "Full Name", rank: "Rank", serviceNo: "Service Number",
+    unit: "Unit / Formation", branch: "Branch of Service", yearsService: "Years of Service",
+    email: "Email Address", phone: "Phone Number",
+    selectRank: "Select rank...", selectBranch: "Select branch...",
+    // Programme
+    progTitle: "Programme Overview",
+    progDesc: "A 12-month structured programme to guide your transition from military to civilian life.",
+    month: "Month", months: "Months",
+    phase1Title: "Orientation & Assessment", phase1Desc: "Complete your profile, initial assessments, and pathway selection. Attend the orientation open day.",
+    phase2Title: "Foundation Skills Development", phase2Desc: "Targeted workshops: English language, IT proficiency, CV writing, professional communication.",
+    phase3Title: "Pathway-Specific Training", phase3Desc: "Specialist modules: industry certifications, sector placements, or academic bridging.",
+    phase4Title: "Practical Experience & Networking", phase4Desc: "Industry visits, job shadowing, interview practice, networking events with employers.",
+    phase5Title: "Active Transition", phase5Desc: "Apply for positions, begin internships, or complete university applications.",
+    phase6Title: "Graduation & Launch", phase6Desc: "Programme completion, final review, and transition to civilian status with alumni network access.",
+    // Pathways
+    pathTitle: "Choose Your Pathway", pathDesc: "Select up to two pathways that align with your transition goals.",
+    pathEmployment: "Employment", pathEmploymentDesc: "Direct entry into civilian employment with job matching, CV preparation, and employer introductions.",
+    pathEntrepreneur: "Entrepreneurship", pathEntrepreneurDesc: "Business startup support including incubation, financial planning, licensing, and investor networking.",
+    pathEducation: "Further Education", pathEducationDesc: "Academic and professional qualifications, university bridging, and Recognition of Prior Learning.",
+    // Assessment
+    personalityTitle: "Personal Qualities Assessment", personalityDesc: "Understanding your natural strengths and working style.",
+    englishTitle: "English Language Assessment", englishDesc: "Evaluating your professional English proficiency.",
+    technicalTitle: "Technical Skills Self-Assessment", technicalDesc: "Rate your current proficiency. Be honest — this helps us target support.",
+    questionOf: "Question {0} of {1}",
+    // Results
+    resultsTitle: "My Profile Results", resultsDesc: "Your consolidated assessment results and recommended pathway.",
+    personalQualities: "Personal Qualities", englishLanguage: "English Language", technicalSkills: "Technical Skills",
+    // Skills Translation
+    skillsTitle: "Skills Translation", skillsDesc: "Your military qualifications and experience translated into civilian equivalencies.",
+    militarySkill: "Military Competency", civilianEquiv: "Civilian Equivalency",
+    // AI Mentor
+    mentorTitle: "AI Career Mentor", mentorDesc: "Your personal AI-powered career transition advisor. Ask anything about your transition journey.",
+    mentorWelcome: "Hello! I am your AI Career Transition Advisor. I am here to help you navigate your journey from military to civilian life. I can help with career guidance, skills translation, CV advice, interview preparation, and understanding your assessment results. How can I assist you today?",
+    mentorPlaceholder: "Ask your career mentor anything...",
+    mentorSend: "Send",
+    mentorLabel: "AI Career Mentor",
+    // Admin
+    adminDashTitle: "Cohort Dashboard", adminDashDesc: "Programme performance overview and candidate pipeline.",
+    totalCandidates: "Total Candidates", activePhase: "In Active Phase",
+    placedEmployment: "Placed (Employment)", completionRate: "Completion Rate",
+    candidatePipeline: "Candidate Pipeline",
+    // Wellbeing
+    wellbeingTitle: "Wellbeing Check-in", wellbeingDesc: "How are you feeling about your transition today?",
+    // Resources
+    resourcesTitle: "Resources", resourcesDesc: "Tools, guides, and support materials.",
+    cvBuilder: "CV Builder", interviewSim: "Interview Simulator", sectorGuides: "Sector Guides",
+    financialPlan: "Financial Planning", skillsGuide: "Skills Translation Guide", aiAdvisor: "AI Career Advisor",
+  },
+  ar: {
+    splashBadge: "وزارة الدفاع — الإمارات العربية المتحدة",
+    splashTitle: "برنامج الانتقال<br>إلى الحياة المدنية",
+    splashSub: "مسار مدته 12 شهراً من الخدمة العسكرية المتميزة إلى مسيرة مهنية مدنية ناجحة.",
+    splashVersion: "الإصدار 2.0 — منصة معززة بالذكاء الاصطناعي",
+    selectRole: "اختر دورك للمتابعة",
+    roleCandidate: "مرشح", roleCandidateSub: "مشارك في البرنامج",
+    roleAdmin: "مسؤول", roleAdminSub: "إدارة البرنامج",
+    rolePartner: "شريك", rolePartnerSub: "صاحب عمل / مؤسسة",
+    enterPin: "أدخل الرمز", enter: "دخول البرنامج", invalidPin: "الرمز غير صحيح. حاول مرة أخرى.",
+    langBtn: "English",
+    sideOnboarding: "التسجيل", sideDashboard: "لوحة المتابعة", sideProfile: "البيانات الشخصية",
+    sideDocs: "المستندات", sideProgramme: "نظرة عامة", sidePathways: "اختيار المسار",
+    sideAssessment: "التقييم", sidePersonality: "الصفات الشخصية", sideEnglish: "اللغة الإنجليزية",
+    sideTechnical: "المهارات الفنية", sideResults: "نتائج التقييم",
+    sideJourney: "رحلتي", sidePlan: "خطة الانتقال", sideSkills: "ترجمة المهارات",
+    sideMentor: "المستشار المهني", sideResources: "الموارد", sideWellbeing: "الرفاهية",
+    sideAdminDash: "لوحة المتابعة", sideCandidates: "المرشحين", sideEmployers: "أصحاب العمل", sideReports: "التقارير",
+    home: "الرئيسية", back: "رجوع", next: "التالي", save: "حفظ", continue_: "متابعة",
+    complete: "إكمال", cancel: "إلغاء",
+    copyright: "2026 وزارة الدفاع - الإمارات العربية المتحدة. جميع الحقوق محفوظة.",
+    welcomeTitle: "مرحباً بك في رحلة الانتقال",
+    welcomeDesc: "أكمل مهام التوجيه أدناه لبناء ملفك الانتقالي.",
+    day1Title: "اليوم الأول — التوجيه",
+    day1Sub: "أكمل بياناتك الشخصية وارفع مستنداتك وأجرِ تقييماتك الأولية.",
+    progress: "التقدم",
+    profileTitle: "البيانات الشخصية", profileDesc: "سجل خدمتك العسكرية ومعلومات الاتصال.",
+    fullName: "الاسم الكامل", rank: "الرتبة", serviceNo: "رقم الخدمة",
+    unit: "الوحدة / التشكيل", branch: "فرع الخدمة", yearsService: "سنوات الخدمة",
+    email: "البريد الإلكتروني", phone: "رقم الهاتف",
+    selectRank: "اختر الرتبة...", selectBranch: "اختر الفرع...",
+    progTitle: "نظرة عامة على البرنامج",
+    progDesc: "برنامج منظم مدته 12 شهراً لتوجيه انتقالك من الحياة العسكرية إلى المدنية.",
+    month: "شهر", months: "أشهر",
+    phase1Title: "التوجيه والتقييم", phase1Desc: "أكمل ملفك والتقييمات واختيار المسار. احضر يوم التوجيه.",
+    phase2Title: "تطوير المهارات الأساسية", phase2Desc: "ورش عمل مستهدفة: اللغة الإنجليزية، تقنية المعلومات، كتابة السيرة الذاتية.",
+    phase3Title: "التدريب المتخصص", phase3Desc: "وحدات متخصصة: شهادات مهنية، تدريب قطاعي، أو جسر أكاديمي.",
+    phase4Title: "الخبرة العملية والتواصل", phase4Desc: "زيارات صناعية، تدريب عملي، مقابلات تجريبية، فعاليات تواصل.",
+    phase5Title: "الانتقال الفعلي", phase5Desc: "التقدم للوظائف، بدء التدريب العملي، أو إكمال طلبات الجامعة.",
+    phase6Title: "التخرج والانطلاق", phase6Desc: "إكمال البرنامج، المراجعة النهائية، والانتقال مع شبكة الخريجين.",
+    pathTitle: "اختر مسارك", pathDesc: "اختر مساراً أو اثنين يتوافقان مع أهدافك.",
+    pathEmployment: "التوظيف", pathEmploymentDesc: "دخول مباشر إلى العمل المدني مع مطابقة الوظائف وإعداد السيرة الذاتية.",
+    pathEntrepreneur: "ريادة الأعمال", pathEntrepreneurDesc: "دعم إنشاء المشاريع بما في ذلك الحاضنات والتخطيط المالي والترخيص.",
+    pathEducation: "التعليم العالي", pathEducationDesc: "المؤهلات الأكاديمية والمهنية، الجسر الجامعي، والاعتراف بالتعلم السابق.",
+    personalityTitle: "تقييم الصفات الشخصية", personalityDesc: "فهم نقاط قوتك الطبيعية وأسلوب عملك.",
+    englishTitle: "تقييم اللغة الإنجليزية", englishDesc: "تقييم إتقانك للإنجليزية المهنية.",
+    technicalTitle: "التقييم الذاتي للمهارات الفنية", technicalDesc: "قيّم مستواك الحالي بصدق — هذا يساعدنا على توجيه الدعم.",
+    questionOf: "السؤال {0} من {1}",
+    resultsTitle: "نتائج التقييم", resultsDesc: "نتائجك المجمعة والمسار الموصى به.",
+    personalQualities: "الصفات الشخصية", englishLanguage: "اللغة الإنجليزية", technicalSkills: "المهارات الفنية",
+    skillsTitle: "ترجمة المهارات", skillsDesc: "مؤهلاتك وخبراتك العسكرية مترجمة إلى مكافئات مدنية.",
+    militarySkill: "الكفاءة العسكرية", civilianEquiv: "المكافئ المدني",
+    mentorTitle: "المستشار المهني الذكي", mentorDesc: "مستشارك الشخصي المدعوم بالذكاء الاصطناعي. اسأل أي شيء عن رحلة انتقالك.",
+    mentorWelcome: "مرحباً! أنا مستشارك المهني للانتقال الوظيفي. أنا هنا لمساعدتك في التنقل من الحياة العسكرية إلى المدنية. يمكنني المساعدة في التوجيه المهني، ترجمة المهارات، نصائح السيرة الذاتية، التحضير للمقابلات، وفهم نتائج تقييمك. كيف يمكنني مساعدتك اليوم؟",
+    mentorPlaceholder: "اسأل مستشارك المهني أي شيء...",
+    mentorSend: "إرسال",
+    mentorLabel: "المستشار المهني",
+    adminDashTitle: "لوحة متابعة الفوج", adminDashDesc: "نظرة عامة على أداء البرنامج.",
+    totalCandidates: "إجمالي المرشحين", activePhase: "المرحلة النشطة",
+    placedEmployment: "تم التوظيف", completionRate: "معدل الإكمال",
+    candidatePipeline: "خط أنابيب المرشحين",
+    wellbeingTitle: "فحص الرفاهية", wellbeingDesc: "كيف تشعر تجاه انتقالك اليوم؟",
+    resourcesTitle: "الموارد", resourcesDesc: "أدوات وأدلة ومواد دعم.",
+    cvBuilder: "إنشاء السيرة الذاتية", interviewSim: "محاكي المقابلات", sectorGuides: "أدلة القطاعات",
+    financialPlan: "التخطيط المالي", skillsGuide: "دليل ترجمة المهارات", aiAdvisor: "المستشار الذكي",
+  }
+};
+
+let lang = 'en';
+function t(key) { return T[lang][key] || T.en[key] || key; }
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const state = {
+  screen: 'splash', role: null, currentSection: 'dashboard',
+  profile: { fullName: '', rank: '', serviceNo: '', unit: '', branch: '', yearsService: '', email: '', phone: '' },
+  documents: [], pathways: [],
+  assessments: { personality: {}, english: {}, technical: {} },
+  currentQuestion: 0,
+  personalityComplete: false, englishComplete: false, technicalComplete: false,
+  personalityTraits: {}, englishScore: 0, technicalScores: {},
+  wellbeingMood: null, wellbeingNote: '',
+  chatMessages: [],
+  chatLoading: false,
+};
+
+// ═══════════════════════════════════════════════════
+// SVG ICONS (monochromatic, no emoji)
+// ═══════════════════════════════════════════════════
+const icons = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
+  file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>',
+  brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.1-.9 2-2 2h-4a2 2 0 0 1 0-4h.5"/><path d="M8 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4"/><path d="M16 8a4 4 0 0 1 4 4 4 4 0 0 1-4 4"/><path d="M12 16v6"/></svg>',
+  layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>',
+  target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>',
+  map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>',
+  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>',
+  translate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 18 15 12 9 6"></polyline></svg>',
+  grid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
+  users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+  bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
+  upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+};
+
+// ═══════════════════════════════════════════════════
+// ASSESSMENT DATA
+// ═══════════════════════════════════════════════════
+const personalityQuestions = [
+  { q: { en: "When facing a complex problem, you typically:", ar: "عند مواجهة مشكلة معقدة، عادة ما:" },
+    options: [
+      { text: { en: "Break it into smaller parts and analyse each systematically", ar: "تقسمها إلى أجزاء أصغر وتحللها بشكل منهجي" }, traits: { analytical: 2, methodical: 1 } },
+      { text: { en: "Discuss it with your team to gather different perspectives", ar: "تناقشها مع فريقك لجمع وجهات نظر مختلفة" }, traits: { collaborative: 2, interpersonal: 1 } },
+      { text: { en: "Trust your instinct and make a decisive call", ar: "تثق بحدسك وتتخذ قراراً حاسماً" }, traits: { decisive: 2, leadership: 1 } },
+      { text: { en: "Step back and look at the bigger strategic picture", ar: "تتراجع وتنظر إلى الصورة الاستراتيجية الأكبر" }, traits: { strategic: 2, visionary: 1 } },
+    ]},
+  { q: { en: "In your military career, you were most valued for:", ar: "في مسيرتك العسكرية، كنت تُقدَّر أكثر بسبب:" },
+    options: [
+      { text: { en: "Planning and attention to detail", ar: "التخطيط والاهتمام بالتفاصيل" }, traits: { methodical: 2, analytical: 1 } },
+      { text: { en: "Building and motivating teams", ar: "بناء وتحفيز الفرق" }, traits: { leadership: 2, interpersonal: 1 } },
+      { text: { en: "Creative problem-solving under pressure", ar: "حل المشكلات بإبداع تحت الضغط" }, traits: { creative: 2, adaptive: 1 } },
+      { text: { en: "Strategic thinking and long-term vision", ar: "التفكير الاستراتيجي والرؤية طويلة المدى" }, traits: { strategic: 2, visionary: 1 } },
+    ]},
+  { q: { en: "When transitioning to a new environment, you prefer:", ar: "عند الانتقال إلى بيئة جديدة، تفضل:" },
+    options: [
+      { text: { en: "Clear structure and defined procedures", ar: "هيكل واضح وإجراءات محددة" }, traits: { methodical: 2, analytical: 1 } },
+      { text: { en: "Freedom to explore and adapt on the go", ar: "حرية الاستكشاف والتكيف أثناء المسير" }, traits: { adaptive: 2, creative: 1 } },
+      { text: { en: "A mentor or guide to show the ropes", ar: "مرشد أو موجه ليدلك على الطريق" }, traits: { collaborative: 1, interpersonal: 1 } },
+      { text: { en: "Taking charge and shaping things yourself", ar: "تولي القيادة وتشكيل الأمور بنفسك" }, traits: { leadership: 2, decisive: 1 } },
+    ]},
+  { q: { en: "Your ideal civilian work environment would involve:", ar: "بيئة عملك المدنية المثالية تتضمن:" },
+    options: [
+      { text: { en: "Working with data, systems and technology", ar: "العمل مع البيانات والأنظمة والتكنولوجيا" }, traits: { analytical: 2, technical: 1 } },
+      { text: { en: "Leading and developing people", ar: "قيادة وتطوير الأشخاص" }, traits: { leadership: 2, interpersonal: 1 } },
+      { text: { en: "Creating something new — a business or product", ar: "إنشاء شيء جديد — عمل تجاري أو منتج" }, traits: { creative: 2, visionary: 1 } },
+      { text: { en: "Solving real-world operational challenges", ar: "حل التحديات التشغيلية الواقعية" }, traits: { decisive: 1, methodical: 1, adaptive: 1 } },
+    ]},
+];
+
+const englishQuestions = [
+  { q: { en: "Select the grammatically correct sentence:", ar: "اختر الجملة الصحيحة نحوياً:" },
+    options: [
+      { text: { en: "The team has completed their training successfully.", ar: "The team has completed their training successfully." }, correct: true },
+      { text: { en: "The team have completed their training successful.", ar: "The team have completed their training successful." }, correct: false },
+      { text: { en: "The team has complete their training successfully.", ar: "The team has complete their training successfully." }, correct: false },
+    ]},
+  { q: { en: "Choose the appropriate word: 'The report should be submitted ___ Friday.'", ar: "اختر الكلمة المناسبة: 'The report should be submitted ___ Friday.'" },
+    options: [
+      { text: { en: "by", ar: "by" }, correct: true },
+      { text: { en: "until", ar: "until" }, correct: false },
+      { text: { en: "since", ar: "since" }, correct: false },
+    ]},
+  { q: { en: "Which is the most formal way to say 'We need to fix this quickly'?", ar: "ما هي الطريقة الأكثر رسمية لقول 'We need to fix this quickly'?" },
+    options: [
+      { text: { en: "We must resolve this issue as a matter of urgency.", ar: "We must resolve this issue as a matter of urgency." }, correct: true },
+      { text: { en: "We should get this sorted out fast.", ar: "We should get this sorted out fast." }, correct: false },
+      { text: { en: "We have to handle this problem in no time.", ar: "We have to handle this problem in no time." }, correct: false },
+    ]},
+  { q: { en: "Which sentence correctly uses a conditional structure?", ar: "أي جملة تستخدم صيغة الشرط بشكل صحيح؟" },
+    options: [
+      { text: { en: "Had I known, I would have attended.", ar: "Had I known, I would have attended." }, correct: true },
+      { text: { en: "If I would have known, I would have attended.", ar: "If I would have known, I would have attended." }, correct: false },
+      { text: { en: "If I had knew, I would have attended.", ar: "If I had knew, I would have attended." }, correct: false },
+    ]},
+  { q: { en: "Select the best meaning: 'The proposal was met with unanimous approval.'", ar: "اختر المعنى الأفضل: 'The proposal was met with unanimous approval.'" },
+    options: [
+      { text: { en: "Everyone agreed with the proposal", ar: "وافق الجميع على الاقتراح" }, correct: true },
+      { text: { en: "Most people liked the proposal", ar: "أعجب معظم الناس بالاقتراح" }, correct: false },
+      { text: { en: "The proposal caused much debate", ar: "أثار الاقتراح الكثير من النقاش" }, correct: false },
+    ]},
+];
+
+const technicalQuestions = [
+  { q: { en: "Microsoft Office (Word, Excel, PowerPoint)", ar: "مايكروسوفت أوفيس (وورد، إكسل، باوربوينت)" }, cat: "IT" },
+  { q: { en: "Email and professional correspondence", ar: "البريد الإلكتروني والمراسلات المهنية" }, cat: "IT" },
+  { q: { en: "Internet research and information verification", ar: "البحث عبر الإنترنت والتحقق من المعلومات" }, cat: "IT" },
+  { q: { en: "Project planning and management", ar: "تخطيط وإدارة المشاريع" }, cat: "Management" },
+  { q: { en: "Budget management and financial awareness", ar: "إدارة الميزانية والوعي المالي" }, cat: "Management" },
+  { q: { en: "Risk assessment and mitigation", ar: "تقييم المخاطر والتخفيف منها" }, cat: "Management" },
+  { q: { en: "Briefing and presentation delivery", ar: "تقديم الإحاطات والعروض التقديمية" }, cat: "Communication" },
+  { q: { en: "Report writing and documentation", ar: "كتابة التقارير والتوثيق" }, cat: "Communication" },
+  { q: { en: "Negotiation and conflict resolution", ar: "التفاوض وحل النزاعات" }, cat: "Leadership" },
+  { q: { en: "Mentoring and staff development", ar: "التوجيه وتطوير الموظفين" }, cat: "Leadership" },
+];
+
+// Skills translation map
+const skillsMap = [
+  { mil: { en: "Unit Command", ar: "قيادة الوحدة" }, civ: { en: "Senior Operations Management", ar: "إدارة العمليات العليا" } },
+  { mil: { en: "Operational Planning", ar: "التخطيط العملياتي" }, civ: { en: "Strategic Project Management (PMP)", ar: "إدارة المشاريع الاستراتيجية" } },
+  { mil: { en: "Intelligence Analysis", ar: "تحليل الاستخبارات" }, civ: { en: "Business Intelligence and Data Analysis", ar: "ذكاء الأعمال وتحليل البيانات" } },
+  { mil: { en: "Personnel Management", ar: "إدارة الأفراد" }, civ: { en: "Human Resources Management (CIPD)", ar: "إدارة الموارد البشرية" } },
+  { mil: { en: "Logistics and Supply Chain", ar: "اللوجستيات وسلسلة الإمداد" }, civ: { en: "Supply Chain Management (CIPS)", ar: "إدارة سلسلة الإمداد" } },
+  { mil: { en: "Weapons Systems", ar: "أنظمة الأسلحة" }, civ: { en: "Technical Systems Engineering", ar: "هندسة الأنظمة التقنية" } },
+  { mil: { en: "Military Communications", ar: "الاتصالات العسكرية" }, civ: { en: "IT Infrastructure and Telecommunications", ar: "البنية التحتية لتقنية المعلومات" } },
+  { mil: { en: "Security Operations", ar: "عمليات الأمن" }, civ: { en: "Corporate Security and Risk Management", ar: "الأمن المؤسسي وإدارة المخاطر" } },
+  { mil: { en: "Training and Instruction", ar: "التدريب والتعليم" }, civ: { en: "Learning and Development / Corporate Training", ar: "التعلم والتطوير / التدريب المؤسسي" } },
+  { mil: { en: "Crisis Response", ar: "الاستجابة للأزمات" }, civ: { en: "Emergency Management and Business Continuity", ar: "إدارة الطوارئ واستمرارية الأعمال" } },
+];
+
+// ═══════════════════════════════════════════════════
+// NAVIGATE
+// ═══════════════════════════════════════════════════
+function navigate(section) {
+  state.currentSection = section;
+  state.currentQuestion = 0;
+  render();
+  document.querySelector('.main-content')?.scrollTo(0, 0);
+}
+
+function updateProfile(field, value) { state.profile[field] = value; }
+function addMockDocument(name) { if (!state.documents.includes(name)) { state.documents.push(name); render(); } }
+function togglePathway(p) {
+  const idx = state.pathways.indexOf(p);
+  if (idx > -1) state.pathways.splice(idx, 1);
+  else if (state.pathways.length < 2) state.pathways.push(p);
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+// AI MENTOR — HYBRID: Rule-Based Engine + Groq LLM
+// ═══════════════════════════════════════════════════
+// ── CONFIGURATION ──
+// Remove or blank this key before sharing the file externally.
+const GROQ_API_KEY = ''; /* key removed for publication - mentor uses the built-in rule-based engine; set a server-side proxy before re-enabling the LLM layer */
+const GROQ_MODEL = 'llama-3.1-70b-versatile';
+const AI_AVAILABLE = !!GROQ_API_KEY;
+
+// ── RULE-BASED ADVISOR ENGINE ──
+// Works entirely offline from candidate data. No API calls.
+function generateRuleBasedAdvice() {
+  const p = state.profile;
+  const traits = state.personalityTraits || {};
+  const topTraits = Object.entries(traits).sort((a,b)=>b[1]-a[1]).slice(0,3).map(t=>t[0]);
+  const engScore = state.englishScore || 0;
+  const techScores = state.technicalScores || {};
+  const pathways = state.pathways;
+  const years = parseInt(p.yearsService) || 0;
+
+  const traitNames = { analytical: {en:'Analytical',ar:'تحليلي'}, collaborative: {en:'Collaborative',ar:'تعاوني'}, decisive: {en:'Decisive',ar:'حاسم'}, strategic: {en:'Strategic',ar:'استراتيجي'}, methodical: {en:'Methodical',ar:'منهجي'}, interpersonal: {en:'Interpersonal',ar:'اجتماعي'}, creative: {en:'Creative',ar:'إبداعي'}, visionary: {en:'Visionary',ar:'صاحب رؤية'}, adaptive: {en:'Adaptable',ar:'متكيف'}, leadership: {en:'Leadership',ar:'قيادي'}, technical: {en:'Technical',ar:'تقني'} };
+
+  const advice = { strengths: [], gaps: [], sectors: [], actions: [] };
+
+  // Strengths from personality
+  if (topTraits.length > 0) {
+    const names = topTraits.map(t => (traitNames[t]||{})[lang] || t);
+    advice.strengths.push(lang==='ar' ? `نقاط قوتك الرئيسية: ${names.join('، ')}` : `Your top strengths: ${names.join(', ')}`);
+  }
+  if (years >= 20) advice.strengths.push(lang==='ar' ? `خبرتك الطويلة (${years} سنة) تؤهلك لأدوار قيادية عليا في القطاع المدني` : `Your extensive experience (${years} years) qualifies you for senior leadership roles in the civilian sector`);
+  else if (years >= 10) advice.strengths.push(lang==='ar' ? `خبرتك (${years} سنة) توفر أساساً قوياً للأدوار الإدارية المتوسطة والعليا` : `Your experience (${years} years) provides a strong foundation for mid-to-senior management roles`);
+
+  // Gaps
+  if (engScore > 0 && engScore < 70) advice.gaps.push(lang==='ar' ? `مستوى اللغة الإنجليزية (${engScore}%) يحتاج تطوير — نوصي ببرنامج اللغة الإنجليزية المهنية` : `English proficiency (${engScore}%) needs development — we recommend the Professional English programme`);
+  if (techScores.IT && techScores.IT < 60) advice.gaps.push(lang==='ar' ? `المهارات الرقمية تحتاج تعزيز — نوصي بوحدة محو الأمية الرقمية` : `Digital skills need strengthening — we recommend the Digital Literacy module`);
+
+  // Sector recommendations based on traits and branch
+  const branch = (p.branch||'').toLowerCase();
+  if (topTraits.includes('analytical') || topTraits.includes('technical')) advice.sectors.push(lang==='ar' ? 'تكنولوجيا المعلومات وتحليل البيانات' : 'IT and Data Analysis');
+  if (topTraits.includes('leadership') || topTraits.includes('strategic')) advice.sectors.push(lang==='ar' ? 'الإدارة العليا والاستشارات' : 'Senior Management and Consultancy');
+  if (branch.includes('air') || branch.includes('defence')) advice.sectors.push(lang==='ar' ? 'الطيران والدفاع المدني' : 'Aviation and Civil Defence');
+  if (topTraits.includes('interpersonal') || topTraits.includes('collaborative')) advice.sectors.push(lang==='ar' ? 'الموارد البشرية والتدريب' : 'Human Resources and Training');
+  if (advice.sectors.length === 0) advice.sectors.push(lang==='ar' ? 'أمن الشركات وإدارة المخاطر' : 'Corporate Security and Risk Management');
+
+  // Pathway-specific actions
+  if (pathways.includes('Employment')) {
+    advice.actions.push(lang==='ar' ? 'أولوية: ابدأ بإعداد سيرتك الذاتية المدنية باستخدام أداة إنشاء السيرة الذاتية' : 'Priority: Start building your civilian CV using the CV Builder tool');
+    advice.actions.push(lang==='ar' ? 'حضور معارض التوظيف القادمة والتسجيل في منصة مطابقة الوظائف' : 'Attend upcoming career fairs and register on the job matching platform');
+  }
+  if (pathways.includes('Entrepreneurship')) {
+    advice.actions.push(lang==='ar' ? 'أولوية: حدد فكرة عملك وابدأ بتطوير نموذج العمل' : 'Priority: Define your business idea and begin developing a business model');
+    advice.actions.push(lang==='ar' ? 'تواصل مع حاضنات الأعمال المتاحة (Hub71، مؤسسة محمد بن راشد للمشاريع الصغيرة)' : 'Connect with available incubators (Hub71, MBR Establishment for SME Development)');
+  }
+  if (pathways.includes('Further Education')) {
+    advice.actions.push(lang==='ar' ? 'أولوية: اجمع جميع شهاداتك العسكرية لتقييم الاعتراف بالتعلم السابق' : 'Priority: Gather all military certificates for Recognition of Prior Learning assessment');
+    advice.actions.push(lang==='ar' ? 'حدد الجامعات والبرامج المهنية التي تتوافق مع أهدافك المهنية' : 'Identify universities and professional programmes aligned with your career goals');
+  }
+  if (pathways.length === 0) {
+    advice.actions.push(lang==='ar' ? 'خطوتك التالية: اختر مسارك الانتقالي (توظيف، ريادة أعمال، أو تعليم عالي)' : 'Next step: Select your transition pathway (Employment, Entrepreneurship, or Further Education)');
+  }
+
+  return advice;
+}
+
+function formatRuleBasedResponse(advice) {
+  let parts = [];
+  if (advice.strengths.length) parts.push((lang==='ar'?'**نقاط القوة:**\n':'**Strengths:**\n') + advice.strengths.join('\n'));
+  if (advice.gaps.length) parts.push((lang==='ar'?'**مجالات التطوير:**\n':'**Development Areas:**\n') + advice.gaps.join('\n'));
+  if (advice.sectors.length) parts.push((lang==='ar'?'**القطاعات الموصى بها:**\n':'**Recommended Sectors:**\n') + advice.sectors.join(lang==='ar'?' | ':' | '));
+  if (advice.actions.length) parts.push((lang==='ar'?'**الإجراءات المطلوبة:**\n':'**Recommended Actions:**\n') + advice.actions.join('\n'));
+  return parts.join('\n\n');
+}
+
+// ── GROQ LLM LAYER ──
+async function callGroqAPI(messages) {
+  if (!AI_AVAILABLE) return null;
+  try {
+    const sysPrompt = `You are an AI Career Transition Advisor embedded in the UAE Ministry of Defence "Transition to Civilian Programme" platform. You help military service leavers transition to civilian careers. You understand the UAE labour market, Emiratization policy, military ranks and roles across all branches of the UAE Armed Forces.
+
+You can advise on: career pathway selection (Employment, Entrepreneurship, Further Education), skills translation from military to civilian equivalencies, CV writing and interview preparation, assessment result interpretation, available support services, and the emotional and practical aspects of transition.
+
+You are aware of the UK Career Transition Partnership (CTP) model which operates with Reed in Partnership, provides up to 2 years pre-discharge and 2 years post-discharge support, and includes workshops (Career Transition Workshop, Self-Employment Awareness, Retirement Brief), one-to-one consulting, vocational training, employment fairs, a digital platform with job matching, and finance and housing briefs. You can reference international best practices when relevant.
+
+${lang === 'ar' ? 'Respond in Arabic. Use natural conversational Arabic appropriate for UAE military personnel.' : 'Respond in English.'}
+Keep responses concise (3-5 sentences), supportive, and actionable.
+
+Candidate profile: Name: ${state.profile.fullName || 'Not yet provided'}, Rank: ${state.profile.rank || 'Not specified'}, Branch: ${state.profile.branch || 'Not specified'}, Years of Service: ${state.profile.yearsService || 'Not specified'}, Selected Pathways: ${state.pathways.join(', ') || 'Not yet selected'}, English Score: ${state.englishScore || 'Not assessed'}%, Top Personality Traits: ${Object.entries(state.personalityTraits||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(t=>t[0]).join(', ') || 'Not assessed'}.`;
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API_KEY}` },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "system", content: sysPrompt }, ...messages],
+        max_tokens: 600,
+        temperature: 0.7,
+      })
+    });
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch (e) {
+    console.warn('Groq API unavailable:', e.message);
+    return null;
+  }
+}
+
+// ── HYBRID SEND FUNCTION ──
+async function sendMentorMessage() {
+  const input = document.getElementById('mentorInput');
+  const msg = input.value.trim();
+  if (!msg || state.chatLoading) return;
+  input.value = '';
+  state.chatMessages.push({ role: 'user', content: msg });
+  state.chatLoading = true;
+  render();
+  scrollChat();
+
+  // Try Groq first; fall back to rule-based
+  const apiMessages = state.chatMessages.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }));
+  let reply = await callGroqAPI(apiMessages);
+
+  if (!reply) {
+    // Offline fallback: rule-based contextual response
+    const lowerMsg = msg.toLowerCase();
+    const advice = generateRuleBasedAdvice();
+    if (lowerMsg.includes('cv') || lowerMsg.includes('resume') || lowerMsg.includes('سيرة')) {
+      reply = lang==='ar' ? 'لإنشاء سيرتك الذاتية المدنية، ابدأ بترجمة مهاراتك العسكرية إلى لغة مدنية. استخدم أداة "ترجمة المهارات" في المنصة، ثم انتقل إلى أداة إنشاء السيرة الذاتية. ركز على الإنجازات القابلة للقياس بدلاً من المسؤوليات.' : 'To build your civilian CV, start by translating your military skills into civilian language. Use the Skills Translation tool on this platform, then move to the CV Builder. Focus on measurable achievements rather than listing responsibilities. Quantify where possible — teams led, budgets managed, operations completed.';
+    } else if (lowerMsg.includes('interview') || lowerMsg.includes('مقابل')) {
+      reply = lang==='ar' ? 'التحضير للمقابلات المدنية يختلف عن الإحاطات العسكرية. تدرب على أسلوب STAR (الموقف، المهمة، الإجراء، النتيجة) لتأطير خبراتك. تجنب المصطلحات العسكرية واستخدم لغة الأعمال.' : 'Civilian interviews differ from military briefings. Practice the STAR method (Situation, Task, Action, Result) to frame your experiences. Avoid military jargon and use business language. Prepare questions about company culture — this shows genuine interest.';
+    } else if (lowerMsg.includes('pathway') || lowerMsg.includes('مسار') || lowerMsg.includes('choose') || lowerMsg.includes('اختيار')) {
+      reply = formatRuleBasedResponse(advice);
+    } else if (lowerMsg.includes('finance') || lowerMsg.includes('pension') || lowerMsg.includes('مال') || lowerMsg.includes('تقاعد')) {
+      reply = lang==='ar' ? 'التخطيط المالي للانتقال مهم. تأكد من فهم حقوقك التقاعدية وتواصل مع صندوق المعاشات. ضع ميزانية انتقالية تغطي 6 أشهر على الأقل بعد الخدمة. راجع قسم التخطيط المالي في الموارد.' : 'Financial planning for transition is essential. Understand your pension entitlements and contact the Pension Fund early. Build a transition budget covering at least 6 months post-service. Review the Financial Planning section under Resources for detailed guidance.';
+    } else if (lowerMsg.includes('housing') || lowerMsg.includes('سكن') || lowerMsg.includes('accommodation')) {
+      reply = lang==='ar' ? 'الانتقال من السكن العسكري مرحلة مهمة. ابدأ مبكراً في البحث عن خيارات السكن المدني. تحقق من برامج الإسكان الحكومية المتاحة للمواطنين. قسم الحياة المدنية في المنصة يحتوي على موارد إضافية.' : 'Transitioning from military accommodation is a significant step. Start researching civilian housing options early. Check government housing programmes available to UAE nationals. The Civilian Life section on this platform contains additional resources.';
+    } else {
+      // General personalised response
+      reply = formatRuleBasedResponse(advice);
+      if (!reply) reply = lang==='ar' ? 'أنا مستشارك المهني. يمكنني مساعدتك في اختيار المسار، ترجمة المهارات، إعداد السيرة الذاتية، التحضير للمقابلات، والتخطيط المالي. ما الذي تود مناقشته؟' : 'I am your career advisor. I can help with pathway selection, skills translation, CV preparation, interview coaching, and financial planning. What would you like to discuss?';
+    }
+  }
+
+  state.chatMessages.push({ role: 'assistant', content: reply });
+  state.chatLoading = false;
+  render();
+  scrollChat();
+}
+
+function scrollChat() {
+  setTimeout(() => { const el = document.getElementById('chatMessages'); if (el) el.scrollTop = el.scrollHeight; }, 100);
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: SPLASH
+// ═══════════════════════════════════════════════════
+function renderSplash() {
+  return `<div class="splash-screen">
+    <div class="splash-content">
+      <div class="splash-badge"><span class="splash-badge-dot"></span>${t('splashBadge')}</div>
+      <h1 class="splash-title">${t('splashTitle')}</h1>
+      <p class="splash-subtitle">${t('splashSub')}</p>
+      <div class="splash-version">${t('splashVersion')}</div>
+      <p style="color:var(--slate-400);font-size:0.8rem;margin-bottom:1.25rem">${t('selectRole')}</p>
+      <div class="role-cards">
+        <div class="role-card ${state.role==='candidate'?'selected':''}" onclick="state.role='candidate';render()">
+          <div class="role-icon">${icons.user}</div>
+          <div class="role-label">${t('roleCandidate')}</div>
+          <div class="role-sublabel">${t('roleCandidateSub')}</div>
+        </div>
+        <div class="role-card ${state.role==='admin'?'selected':''}" onclick="state.role='admin';render()">
+          <div class="role-icon">${icons.grid}</div>
+          <div class="role-label">${t('roleAdmin')}</div>
+          <div class="role-sublabel">${t('roleAdminSub')}</div>
+        </div>
+        <div class="role-card ${state.role==='partner'?'selected':''}" onclick="state.role='partner';render()">
+          <div class="role-icon">${icons.users}</div>
+          <div class="role-label">${t('rolePartner')}</div>
+          <div class="role-sublabel">${t('rolePartnerSub')}</div>
+        </div>
+      </div>
+      ${state.role ? `
+        <p style="color:var(--slate-500);font-size:0.75rem;margin-bottom:0.5rem">${t('enterPin')}</p>
+        <div class="splash-pin">
+          <input type="password" maxlength="1" id="p1" oninput="pinNext(this,'p2')" autofocus>
+          <input type="password" maxlength="1" id="p2" oninput="pinNext(this,'p3')">
+          <input type="password" maxlength="1" id="p3" oninput="pinNext(this,'p4')">
+          <input type="password" maxlength="1" id="p4" oninput="checkPin()">
+        </div>
+        <button class="splash-enter ${state._pinReady?'ready':''}" onclick="tryEnter()" id="enterBtn">${t('enter')}</button>
+        <div class="splash-error" id="pinError"></div>
+      ` : ''}
+    </div>
+    <div class="splash-footer">
+      <span>&copy; ${t('copyright')}</span>
+      <button class="lang-toggle" onclick="setLang(lang==='en'?'ar':'en')">${t('langBtn')}</button>
+    </div>
+  </div>`;
+}
+
+function pinNext(el, nextId) { if (el.value) document.getElementById(nextId)?.focus(); checkPin(); }
+function checkPin() {
+  const pin = ['p1','p2','p3','p4'].map(id => document.getElementById(id)?.value || '').join('');
+  state._pinReady = pin.length === 4;
+  const btn = document.getElementById('enterBtn');
+  if (btn) btn.className = `splash-enter ${state._pinReady ? 'ready' : ''}`;
+}
+function tryEnter() {
+  const pin = ['p1','p2','p3','p4'].map(id => document.getElementById(id)?.value || '').join('');
+  const valid = { candidate: '2626', admin: '1234', partner: '5678' };
+  if (pin === valid[state.role]) { state.screen = 'app'; state.currentSection = state.role === 'admin' ? 'admin-dash' : state.role === 'partner' ? 'partner-dash' : 'dashboard'; render(); }
+  else { const err = document.getElementById('pinError'); if (err) err.textContent = t('invalidPin'); }
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: SIDEBAR
+// ═══════════════════════════════════════════════════
+function renderSidebar() {
+  const isAdmin = state.role === 'admin';
+  const isPartner = state.role === 'partner';
+  const initials = state.profile.fullName ? state.profile.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : (isAdmin ? 'AD' : isPartner ? 'EP' : 'TC');
+  const name = state.profile.fullName || (isAdmin ? (lang==='ar'?'مسؤول البرنامج':'Programme Admin') : isPartner ? (lang==='ar'?'شريك':'Partner') : (lang==='ar'?'مرشح الانتقال':'Transition Candidate'));
+  const roleLbl = isAdmin ? (lang==='ar'?'مسؤول':'Administrator') : isPartner ? (lang==='ar'?'صاحب عمل':'Employer') : (state.profile.rank || (lang==='ar'?'يوم التوجيه':'Day 1 Orientation'));
+
+  let navGroups = [];
+  if (isAdmin) {
+    navGroups = [
+      { label: lang==='ar'?'إدارة البرنامج':'Programme Management', items: [
+        { id: 'admin-dash', label: t('sideAdminDash'), icon: icons.grid },
+        { id: 'admin-candidates', label: t('sideCandidates'), icon: icons.users },
+        { id: 'admin-employers', label: t('sideEmployers'), icon: icons.target },
+        { id: 'admin-reports', label: t('sideReports'), icon: icons.bar },
+      ]}
+    ];
+  } else if (isPartner) {
+    navGroups = [
+      { label: lang==='ar'?'بوابة الشريك':'Partner Portal', items: [
+        { id: 'partner-dash', label: t('sideDashboard'), icon: icons.grid },
+        { id: 'partner-candidates', label: lang==='ar'?'المرشحون المتاحون':'Available Candidates', icon: icons.users },
+        { id: 'partner-vacancies', label: lang==='ar'?'الوظائف الشاغرة':'Vacancies', icon: icons.target },
+      ]}
+    ];
+  } else {
+    const profileDone = state.profile.fullName !== '';
+    const assessDone = state.personalityComplete && state.englishComplete && state.technicalComplete;
+    navGroups = [
+      { label: t('sideOnboarding'), items: [
+        { id: 'dashboard', label: t('sideDashboard'), icon: icons.home },
+        { id: 'profile', label: t('sideProfile'), icon: icons.user, done: profileDone },
+        { id: 'documents', label: t('sideDocs'), icon: icons.file },
+        { id: 'programme', label: t('sideProgramme'), icon: icons.book },
+        { id: 'pathways', label: t('sidePathways'), icon: icons.compass, done: state.pathways.length > 0 },
+      ]},
+      { label: t('sideAssessment'), items: [
+        { id: 'assess-personality', label: t('sidePersonality'), icon: icons.brain, done: state.personalityComplete },
+        { id: 'assess-english', label: t('sideEnglish'), icon: icons.book, done: state.englishComplete },
+        { id: 'assess-technical', label: t('sideTechnical'), icon: icons.layers, done: state.technicalComplete },
+        { id: 'results', label: t('sideResults'), icon: icons.target },
+      ]},
+      { label: t('sideJourney'), items: [
+        { id: 'plan', label: t('sidePlan'), icon: icons.map },
+        { id: 'skills', label: t('sideSkills'), icon: icons.translate },
+        { id: 'mentor', label: t('sideMentor'), icon: icons.chat },
+        { id: 'resources', label: t('sideResources'), icon: icons.layers },
+        { id: 'wellbeing', label: t('sideWellbeing'), icon: icons.heart },
+      ]},
+    ];
+  }
+
+  return `<div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">${lang==='ar'?'برنامج الانتقال':'MoD Transition'}<br>${lang==='ar'?'وزارة الدفاع':'Programme'}</div>
+      <div class="sidebar-logo-sub">${lang==='ar'?'الإمارات العربية المتحدة':'United Arab Emirates'}</div>
+      <div class="sidebar-lang">
+        <button class="${lang==='en'?'active':''}" onclick="setLang('en')">EN</button>
+        <button class="${lang==='ar'?'active':''}" onclick="setLang('ar')">عربي</button>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      ${navGroups.map(g => `
+        <div class="nav-section-label">${g.label}</div>
+        ${g.items.map(item => `
+          <div class="nav-item ${state.currentSection===item.id?'active':''}" onclick="navigate('${item.id}')">
+            ${item.icon}<span>${item.label}</span>
+            ${item.done ? `<span class="nav-check">${icons.check}</span>` : ''}
+          </div>
+        `).join('')}
+      `).join('')}
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar ${isAdmin?'admin':''} ${isPartner?'partner':''}">${initials}</div>
+      <div><div class="sidebar-user-name">${name}</div><div class="sidebar-user-role">${roleLbl}</div></div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: CANDIDATE PAGES
+// ═══════════════════════════════════════════════════
+function renderDashboard() {
+  const tasks = [state.profile.fullName!=='', state.documents.length>0, state.pathways.length>0, state.personalityComplete, state.englishComplete, state.technicalComplete, state.wellbeingMood!==null];
+  const done = tasks.filter(Boolean).length;
+  const pct = Math.round((done/tasks.length)*100);
+  return `<div class="page-header"><div class="page-breadcrumb">${t('home')}</div><h1 class="page-title">${t('welcomeTitle')}</h1><p class="page-desc">${t('welcomeDesc')}</p></div>
+  <div class="page-body">
+    <div class="plan-card animate-in"><div style="position:relative;z-index:1">
+      <div class="plan-card-title">${t('day1Title')}</div>
+      <div class="plan-card-subtitle">${t('day1Sub')}</div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-top:1rem">
+        <div class="progress-bar-track" style="flex:1;height:8px"><div class="progress-bar-fill progress-green" style="width:${pct}%"></div></div>
+        <span style="font-size:0.85rem;font-weight:600;color:var(--white)">${pct}%</span>
+      </div>
+    </div></div>
+    <div class="metrics-row animate-in delay-1">
+      <div class="metric-card"><div class="metric-val">${done}</div><div class="metric-lbl">${lang==='ar'?'مهام مكتملة':'Tasks Complete'}</div></div>
+      <div class="metric-card gold"><div class="metric-val">${tasks.length - done}</div><div class="metric-lbl">${lang==='ar'?'مهام متبقية':'Remaining'}</div></div>
+      <div class="metric-card slate"><div class="metric-val">${state.pathways.length}</div><div class="metric-lbl">${lang==='ar'?'مسارات مختارة':'Pathways Selected'}</div></div>
+      <div class="metric-card red"><div class="metric-val">12</div><div class="metric-lbl">${lang==='ar'?'أشهر متبقية':'Months Remaining'}</div></div>
+    </div>
+  </div>`;
+}
+
+function renderProfile() {
+  const p = state.profile;
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideOnboarding')}</div><h1 class="page-title">${t('profileTitle')}</h1><p class="page-desc">${t('profileDesc')}</p></div>
+  <div class="page-body">
+    <div class="card animate-in"><div class="card-title">${lang==='ar'?'السجل العسكري':'Military Service Record'}</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">${t('fullName')}</label><input class="form-input" value="${p.fullName}" onchange="updateProfile('fullName',this.value)"></div>
+      <div class="form-group"><label class="form-label">${t('rank')}</label><select class="form-select" onchange="updateProfile('rank',this.value)"><option value="">${t('selectRank')}</option>${['Lieutenant','Captain','Major','Lieutenant Colonel','Colonel','Brigadier'].map(r=>`<option ${p.rank===r?'selected':''}>${r}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">${t('serviceNo')}</label><input class="form-input" value="${p.serviceNo}" onchange="updateProfile('serviceNo',this.value)"></div>
+      <div class="form-group"><label class="form-label">${t('unit')}</label><input class="form-input" value="${p.unit}" onchange="updateProfile('unit',this.value)"></div>
+      <div class="form-group"><label class="form-label">${t('branch')}</label><select class="form-select" onchange="updateProfile('branch',this.value)"><option value="">${t('selectBranch')}</option>${['Army','Navy','Air Force','Air Defence','Presidential Guard','Joint Operations'].map(b=>`<option ${p.branch===b?'selected':''}>${b}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">${t('yearsService')}</label><input class="form-input" value="${p.yearsService}" onchange="updateProfile('yearsService',this.value)"></div>
+    </div></div>
+    <div class="card animate-in delay-1"><div class="card-title">${lang==='ar'?'معلومات الاتصال':'Contact Information'}</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">${t('email')}</label><input class="form-input" type="email" value="${p.email}" onchange="updateProfile('email',this.value)"></div>
+      <div class="form-group"><label class="form-label">${t('phone')}</label><input class="form-input" type="tel" value="${p.phone}" onchange="updateProfile('phone',this.value)"></div>
+    </div></div>
+    <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1rem" class="animate-in delay-2">
+      <button class="btn btn-secondary" onclick="navigate('dashboard')">${t('cancel')}</button>
+      <button class="btn btn-primary" onclick="navigate('documents')">${t('save')} &amp; ${t('continue_')}</button>
+    </div>
+  </div>`;
+}
+
+function renderProgramme() {
+  const phases = [
+    { m: `${t('month')} 1`, title: t('phase1Title'), desc: t('phase1Desc'), current: true },
+    { m: `${t('months')} 2-3`, title: t('phase2Title'), desc: t('phase2Desc') },
+    { m: `${t('months')} 4-6`, title: t('phase3Title'), desc: t('phase3Desc') },
+    { m: `${t('months')} 7-9`, title: t('phase4Title'), desc: t('phase4Desc') },
+    { m: `${t('months')} 10-11`, title: t('phase5Title'), desc: t('phase5Desc') },
+    { m: `${t('month')} 12`, title: t('phase6Title'), desc: t('phase6Desc') },
+  ];
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideOnboarding')}</div><h1 class="page-title">${t('progTitle')}</h1><p class="page-desc">${t('progDesc')}</p></div>
+  <div class="page-body">
+    <div class="card animate-in"><div class="card-title">${lang==='ar'?'رحلتك على مدار 12 شهراً':'Your 12-Month Journey'}</div>
+    <div class="timeline" style="margin-top:1rem">
+      ${phases.map(p => `<div class="timeline-item"><div class="timeline-dot ${p.current?'current':''}"></div><div class="timeline-month">${p.m}</div><div class="timeline-title">${p.title}</div><div class="timeline-desc">${p.desc}</div></div>`).join('')}
+    </div></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:1rem"><button class="btn btn-primary" onclick="navigate('pathways')">${lang==='ar'?'اختر مسارك':'Choose Your Pathway'}</button></div>
+  </div>`;
+}
+
+function renderPathways() {
+  const paths = [
+    { id: 'Employment', label: t('pathEmployment'), desc: t('pathEmploymentDesc'), icon: '&#9733;' },
+    { id: 'Entrepreneurship', label: t('pathEntrepreneur'), desc: t('pathEntrepreneurDesc'), icon: '&#9670;' },
+    { id: 'Further Education', label: t('pathEducation'), desc: t('pathEducationDesc'), icon: '&#9681;' },
+  ];
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideOnboarding')}</div><h1 class="page-title">${t('pathTitle')}</h1><p class="page-desc">${t('pathDesc')}</p></div>
+  <div class="page-body">
+    <div class="pathway-grid animate-in">
+      ${paths.map(p => `<div class="pathway-card ${state.pathways.includes(p.id)?'selected':''}" onclick="togglePathway('${p.id}')">
+        <div style="font-size:2rem;color:var(--slate-300)">${p.icon}</div>
+        <div class="pathway-title">${p.label}</div>
+        <div class="pathway-desc">${p.desc}</div>
+      </div>`).join('')}
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.5rem">
+      <button class="btn btn-secondary" onclick="navigate('programme')">${t('back')}</button>
+      <button class="btn btn-primary" onclick="navigate('assess-personality')" ${state.pathways.length===0?'disabled style="opacity:0.4"':''}>${lang==='ar'?'بدء التقييمات':'Begin Assessments'}</button>
+    </div>
+  </div>`;
+}
+
+// ═══ Assessment Renderers ═══
+function renderPersonality() {
+  const qs = personalityQuestions;
+  const cur = state.currentQuestion;
+  if (cur >= qs.length) { state.personalityComplete = true; const traits = {}; Object.values(state.assessments.personality).forEach(o => { if (o?.traits) Object.entries(o.traits).forEach(([k,v]) => { traits[k] = (traits[k]||0)+v; }); }); state.personalityTraits = traits; return renderAssessComplete(t('personalQualities'), 'assess-english'); }
+  const q = qs[cur]; const sel = state.assessments.personality[cur];
+  const pct = Math.round((cur/qs.length)*100);
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideAssessment')}</div><h1 class="page-title">${t('personalityTitle')}</h1><p class="page-desc">${t('personalityDesc')}</p></div>
+  <div class="page-body">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem" class="animate-in">
+      <span style="font-size:0.75rem;color:var(--slate-500)">${t('questionOf').replace('{0}',cur+1).replace('{1}',qs.length)}</span>
+      <div class="progress-bar-track" style="flex:1"><div class="progress-bar-fill progress-green" style="width:${pct}%"></div></div>
+      <span style="font-size:0.75rem;color:var(--slate-500)">${pct}%</span>
+    </div>
+    <div class="question-card animate-in delay-1">
+      <div class="question-text">${q.q[lang]||q.q.en}</div>
+      <div class="option-list">
+        ${q.options.map((o,i) => `<div class="option-item ${sel===i?'selected':''}" onclick="state.assessments.personality[${cur}]=${i};render()">
+          <div class="option-radio"></div><span>${o.text[lang]||o.text.en}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="${cur>0?`state.currentQuestion=${cur-1};render()`:`navigate('pathways')`}">${cur>0?t('back'):t('back')}</button>
+      <button class="btn btn-primary" onclick="if(state.assessments.personality[${cur}]!==undefined){state.currentQuestion++;render()}" ${sel===undefined?'disabled style="opacity:0.4"':''}>${cur<qs.length-1?t('next'):t('complete')}</button>
+    </div>
+  </div>`;
+}
+
+function renderEnglish() {
+  const qs = englishQuestions; const cur = state.currentQuestion;
+  if (cur >= qs.length) { let sc = 0; Object.entries(state.assessments.english).forEach(([i,v]) => { if (qs[i].options[v]?.correct) sc++; }); state.englishScore = Math.round((sc/qs.length)*100); state.englishComplete = true; return renderAssessComplete(t('englishLanguage'), 'assess-technical'); }
+  const q = qs[cur]; const sel = state.assessments.english[cur]; const pct = Math.round((cur/qs.length)*100);
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideAssessment')}</div><h1 class="page-title">${t('englishTitle')}</h1><p class="page-desc">${t('englishDesc')}</p></div>
+  <div class="page-body">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem" class="animate-in">
+      <span style="font-size:0.75rem;color:var(--slate-500)">${t('questionOf').replace('{0}',cur+1).replace('{1}',qs.length)}</span>
+      <div class="progress-bar-track" style="flex:1"><div class="progress-bar-fill progress-green" style="width:${pct}%"></div></div>
+    </div>
+    <div class="question-card animate-in delay-1">
+      <div class="question-text">${q.q[lang]||q.q.en}</div>
+      <div class="option-list">
+        ${q.options.map((o,i) => `<div class="option-item ${sel===i?'selected':''}" onclick="state.assessments.english[${cur}]=${i};render()">
+          <div class="option-radio"></div><span>${o.text[lang]||o.text.en}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="${cur>0?`state.currentQuestion=${cur-1};render()`:`navigate('assess-personality')`}">${t('back')}</button>
+      <button class="btn btn-primary" onclick="if(state.assessments.english[${cur}]!==undefined){state.currentQuestion++;render()}" ${sel===undefined?'disabled style="opacity:0.4"':''}>${cur<qs.length-1?t('next'):t('complete')}</button>
+    </div>
+  </div>`;
+}
+
+function renderTechnical() {
+  const cats = ['IT', 'Management', 'Communication', 'Leadership'];
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideAssessment')}</div><h1 class="page-title">${t('technicalTitle')}</h1><p class="page-desc">${t('technicalDesc')}</p></div>
+  <div class="page-body">
+    ${cats.map((cat, ci) => `<div class="card animate-in delay-${ci+1}"><div class="card-title">${cat} ${lang==='ar'?'مهارات':'Skills'}</div>
+      ${technicalQuestions.filter(q=>q.cat===cat).map(q => { const gi = technicalQuestions.indexOf(q); const sel = state.assessments.technical[gi]; return `
+        <div style="margin-bottom:1rem"><div style="font-size:0.8rem;font-weight:500;color:var(--slate-700);margin-bottom:0.4rem">${q.q[lang]||q.q.en}</div>
+        <div class="likert-scale">${[1,2,3,4,5].map(n => `<div class="likert-option ${sel===n?'selected':''}" onclick="state.assessments.technical[${gi}]=${n};render()"><div class="likert-circle">${n}</div><div class="likert-label">${n===1?(lang==='ar'?'أساسي':'Basic'):n===3?(lang==='ar'?'كفء':'Competent'):n===5?(lang==='ar'?'خبير':'Expert'):''}</div></div>`).join('')}</div></div>`; }).join('')}
+    </div>`).join('')}
+    <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+      <button class="btn btn-green" onclick="completeTech()">${lang==='ar'?'إكمال جميع التقييمات':'Complete All Assessments'}</button>
+    </div>
+  </div>`;
+}
+
+function completeTech() {
+  state.technicalComplete = true;
+  const catScores = {};
+  technicalQuestions.forEach((q,i) => { if (!catScores[q.cat]) catScores[q.cat] = []; catScores[q.cat].push(state.assessments.technical[i] || 3); });
+  state.technicalScores = {};
+  Object.entries(catScores).forEach(([c,s]) => { state.technicalScores[c] = Math.round((s.reduce((a,b)=>a+b,0)/s.length)*20); });
+  navigate('results');
+}
+
+function renderAssessComplete(title, nextSection) {
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideAssessment')}</div><h1 class="page-title">${title}</h1></div>
+  <div class="page-body"><div class="card animate-in" style="text-align:center;padding:3rem">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--uae-green-light);color:var(--uae-green);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem">&#10003;</div>
+    <div class="card-title" style="font-size:1.1rem">${lang==='ar'?'تم إكمال التقييم':'Assessment Complete'}</div>
+    <button class="btn btn-primary" style="margin-top:1rem" onclick="navigate('${nextSection}')">${t('continue_')}</button>
+  </div></div>`;
+}
+
+function renderResults() {
+  const traits = state.personalityTraits || {};
+  const topTraits = Object.entries(traits).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const traitLabels = { analytical: lang==='ar'?'تحليلي':'Analytical', collaborative: lang==='ar'?'تعاوني':'Collaborative', decisive: lang==='ar'?'حاسم':'Decisive', strategic: lang==='ar'?'استراتيجي':'Strategic', methodical: lang==='ar'?'منهجي':'Methodical', interpersonal: lang==='ar'?'اجتماعي':'Interpersonal', creative: lang==='ar'?'إبداعي':'Creative', visionary: lang==='ar'?'صاحب رؤية':'Visionary', adaptive: lang==='ar'?'متكيف':'Adaptable', leadership: lang==='ar'?'قيادي':'Leadership', technical: lang==='ar'?'تقني':'Technical' };
+  const techScores = state.technicalScores || { IT: 60, Management: 70, Communication: 65, Leadership: 75 };
+  const engScore = state.englishScore || 0;
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideAssessment')}</div><h1 class="page-title">${t('resultsTitle')}</h1><p class="page-desc">${t('resultsDesc')}</p></div>
+  <div class="page-body">
+    <div class="results-grid animate-in">
+      <div class="card"><div class="card-title">${t('personalQualities')}</div>
+        ${topTraits.length > 0 ? topTraits.map(([tr,sc]) => { const pct = Math.round((sc/6)*100); return `<div class="result-meter"><div class="result-meter-label">${traitLabels[tr]||tr}</div><div class="result-meter-bar"><div class="result-meter-fill" style="width:${pct}%;background:var(--uae-green-soft)"></div></div><div class="result-meter-value">${pct}%</div></div>`; }).join('') : `<p style="font-size:0.8rem;color:var(--slate-400)">${lang==='ar'?'أكمل التقييم لرؤية النتائج':'Complete assessment to see results'}</p>`}
+      </div>
+      <div class="card"><div class="card-title">${t('englishLanguage')}</div>
+        <div style="text-align:center;padding:1rem 0">
+          <div style="font-size:2.5rem;font-weight:700;color:${engScore>=70?'var(--uae-green)':engScore>=40?'var(--accent-gold)':'var(--uae-red)'}">${engScore}%</div>
+          <div style="font-size:0.8rem;color:var(--slate-500)">${engScore>=80?(lang==='ar'?'متقدم':'Advanced'):engScore>=60?(lang==='ar'?'فوق المتوسط':'Upper Intermediate'):(lang==='ar'?'أساسي':'Foundation')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card animate-in delay-1"><div class="card-title">${t('technicalSkills')}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem 1.5rem;margin-top:0.5rem">
+        ${Object.entries(techScores).map(([c,s]) => `<div class="result-meter"><div class="result-meter-label">${c}</div><div class="result-meter-bar"><div class="result-meter-fill" style="width:${s}%;background:${s>=70?'var(--uae-green-soft)':s>=50?'var(--accent-gold)':'var(--uae-red-soft)'}"></div></div><div class="result-meter-value">${s}%</div></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══ Skills Translation ═══
+function renderSkills() {
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideJourney')}</div><h1 class="page-title">${t('skillsTitle')}</h1><p class="page-desc">${t('skillsDesc')}</p></div>
+  <div class="page-body">
+    <div class="card animate-in"><div class="card-title">${t('militarySkill')} → ${t('civilianEquiv')}</div>
+      <div class="skill-map" style="margin-top:1rem">
+        ${skillsMap.map(s => `
+          <div class="skill-mil">${s.mil[lang]||s.mil.en}</div>
+          <div class="skill-arrow">${lang==='ar'?'←':'→'}</div>
+          <div class="skill-civ">${s.civ[lang]||s.civ.en}</div>
+        `).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══ AI Mentor ═══
+function renderMentor() {
+  const msgs = state.chatMessages;
+  const advice = generateRuleBasedAdvice();
+  const hasInsights = advice.strengths.length > 0 || advice.gaps.length > 0 || advice.sectors.length > 0;
+  const statusDot = AI_AVAILABLE ? 'var(--uae-green-soft)' : 'var(--accent-gold)';
+  const statusText = AI_AVAILABLE ? (lang==='ar'?'متصل — مستشار ذكي مباشر':'Online — Live AI Advisor') : (lang==='ar'?'غير متصل — مستشار ذكي محلي':'Offline — Local Smart Advisor');
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideJourney')}</div><h1 class="page-title">${t('mentorTitle')}</h1><p class="page-desc">${t('mentorDesc')}</p></div>
+  <div class="page-body">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;font-size:0.75rem;color:var(--slate-500)">
+      <span style="width:8px;height:8px;border-radius:50%;background:${statusDot};display:inline-block"></span>${statusText}
+    </div>
+    ${hasInsights ? `<div class="card animate-in" style="margin-bottom:0.75rem;border-left:3px solid var(--uae-green)">
+      <div class="card-title" style="font-size:0.8rem;color:var(--uae-green)">${lang==='ar'?'تحليل ذكي بناءً على ملفك':'Smart Analysis Based on Your Profile'}</div>
+      ${advice.sectors.length ? `<div style="margin-top:0.5rem"><span style="font-size:0.7rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em">${lang==='ar'?'قطاعات موصى بها':'Recommended Sectors'}</span><div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.3rem">${advice.sectors.map(s=>`<span style="font-size:0.75rem;padding:3px 10px;background:var(--uae-green-light);color:var(--uae-green);border-radius:4px;font-weight:500">${s}</span>`).join('')}</div></div>` : ''}
+      ${advice.gaps.length ? `<div style="margin-top:0.5rem"><span style="font-size:0.7rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em">${lang==='ar'?'مجالات التطوير':'Development Areas'}</span>${advice.gaps.map(g=>`<div style="font-size:0.78rem;color:var(--slate-600);margin-top:0.2rem">${g}</div>`).join('')}</div>` : ''}
+      ${advice.actions.length ? `<div style="margin-top:0.5rem"><span style="font-size:0.7rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em">${lang==='ar'?'إجراءات مطلوبة':'Recommended Actions'}</span>${advice.actions.slice(0,2).map(a=>`<div style="font-size:0.78rem;color:var(--slate-600);margin-top:0.2rem">${a}</div>`).join('')}</div>` : ''}
+    </div>` : ''}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg ai"><div class="msg-label">${t('mentorLabel')}</div>${t('mentorWelcome')}</div>
+          ${msgs.map(m => m.role === 'user' ? `<div class="chat-msg user">${m.content}</div>` : `<div class="chat-msg ai"><div class="msg-label">${t('mentorLabel')}</div>${m.content}</div>`).join('')}
+          ${state.chatLoading ? `<div class="chat-msg typing">${lang==='ar'?'المستشار يكتب...':'Advisor is typing...'}</div>` : ''}
+        </div>
+        <div class="chat-input-bar">
+          <textarea class="chat-input" id="mentorInput" placeholder="${t('mentorPlaceholder')}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMentorMessage()}" rows="1"></textarea>
+          <button class="chat-send" onclick="sendMentorMessage()" ${state.chatLoading?'disabled':''}>${t('mentorSend')}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══ Resources ═══
+function openMentorWithTopic(topicMsg) {
+  state.chatMessages.push({ role: 'user', content: topicMsg });
+  state.currentSection = 'mentor';
+  state.chatLoading = true;
+  render();
+  scrollChat();
+  (async () => {
+    const apiMessages = state.chatMessages.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content }));
+    let reply = await callGroqAPI(apiMessages);
+    if (!reply) {
+      const lower = topicMsg.toLowerCase();
+      const advice = generateRuleBasedAdvice();
+      if (lower.includes('cv') || lower.includes('سيرة')) reply = lang==='ar' ? 'لإنشاء سيرتك الذاتية المدنية، ابدأ بترجمة مهاراتك العسكرية إلى لغة مدنية. استخدم أداة ترجمة المهارات في المنصة. ركز على الإنجازات القابلة للقياس: عدد الأفراد، الميزانيات، العمليات. هيكل مقترح: ملخص مهني، مهارات رئيسية، المسيرة المهنية (الأحدث أولاً)، المؤهلات.' : 'To build your civilian CV, translate military skills into civilian language using the Skills Translation tool. Focus on measurable achievements: teams led, budgets managed, operations completed. Suggested structure: Professional Summary, Key Skills, Career History (most recent first), Qualifications. Avoid military jargon entirely.';
+      else if (lower.includes('interview') || lower.includes('مقابل')) reply = lang==='ar' ? 'التحضير للمقابلات: تدرب على أسلوب STAR (الموقف، المهمة، الإجراء، النتيجة). تجنب المصطلحات العسكرية. حضّر أمثلة عن القيادة وحل المشكلات. اطرح أسئلة عن ثقافة الشركة. ابحث عن صاحب العمل بدقة. ارتدِ ملابس رسمية مدنية.' : 'Interview preparation: Practice the STAR method (Situation, Task, Action, Result). Avoid military jargon. Prepare examples of leadership, problem-solving, and teamwork. Ask about company culture. Research the employer thoroughly. Dress in business attire.';
+      else if (lower.includes('sector') || lower.includes('قطاع')) reply = (lang==='ar' ? 'القطاعات ذات الطلب العالي في الإمارات: الأمن والدفاع المدني، تكنولوجيا المعلومات، الطيران واللوجستيات، النفط والغاز، إدارة المشاريع، التعليم والتدريب.' : 'High-demand UAE sectors: Security and Civil Defence, IT and Cybersecurity, Aviation and Logistics, Oil and Gas, Project Management, Education and Training.') + (advice.sectors.length ? (lang==='ar' ? ' بناءً على ملفك نوصي بـ: ' : ' Based on your profile: ') + advice.sectors.join(', ') : '');
+      else if (lower.includes('financ') || lower.includes('pension') || lower.includes('مال') || lower.includes('تقاعد')) reply = lang==='ar' ? 'التخطيط المالي: افهم حقوقك التقاعدية وتواصل مع صندوق المعاشات مبكراً. ضع ميزانية انتقالية تغطي 6 أشهر. افهم الفروقات الضريبية. خطط لتكاليف السكن إذا كنت تنتقل من السكن العسكري.' : 'Financial planning: Understand pension entitlements and contact the Pension Fund early. Build a 6-month transition budget. Understand tax differences. Plan for housing costs if leaving military accommodation.';
+      else if (lower.includes('housing') || lower.includes('civilian life') || lower.includes('سكن') || lower.includes('حياة مدنية')) reply = lang==='ar' ? 'الانتقال يشمل أكثر من العمل. السكن: ابدأ البحث مبكراً. الرعاية الصحية: رتّب التأمين قبل انتهاء التغطية العسكرية. تعرف على قوانين العمل المدنية. ابنِ شبكة اجتماعية مدنية بنشاط.' : 'Transition covers more than employment. Housing: start early, explore government programmes. Healthcare: arrange insurance before military coverage ends. Learn civilian employment law. Actively build civilian social and professional networks.';
+      else if (lower.includes('alumni') || lower.includes('خريج')) reply = lang==='ar' ? 'شبكة الخريجين تربطك بمتقاعدين ناجحين يقدمون نصائح عملية وتعريفات بأصحاب عمل. سيتم تفعيلها عند إطلاق البرنامج مع مطابقة بناءً على مسارك وقطاعك المستهدف.' : 'The Alumni Network connects you with successful retirees offering practical advice and employer introductions. It will be activated at programme launch with matching based on your pathway and target sector.';
+      else reply = formatRuleBasedResponse(advice) || (lang==='ar' ? 'كيف يمكنني مساعدتك اليوم؟' : 'How can I help you today?');
+    }
+    state.chatMessages.push({ role: 'assistant', content: reply });
+    state.chatLoading = false;
+    render();
+    scrollChat();
+  })();
+}
+
+function renderResources() {
+  const cvQ = lang==='ar' ? 'أريد مساعدة في إنشاء سيرتي الذاتية المدنية' : 'I need help building my civilian CV';
+  const intQ = lang==='ar' ? 'كيف أستعد لمقابلات العمل المدنية؟' : 'How do I prepare for civilian job interviews?';
+  const secQ = lang==='ar' ? 'ما هي القطاعات المدنية الأنسب لخلفيتي العسكرية؟' : 'Which civilian sectors suit my military background?';
+  const finQ = lang==='ar' ? 'أحتاج نصائح حول التخطيط المالي للانتقال' : 'I need advice on financial planning for transition';
+  const civQ = lang==='ar' ? 'ما الذي أحتاج معرفته عن الانتقال إلى الحياة المدنية؟' : 'What do I need to know about civilian life transition?';
+  const alumQ = lang==='ar' ? 'أخبرني عن شبكة الخريجين' : 'Tell me about the Alumni Network';
+  const items = [
+    { title: t('cvBuilder'), desc: lang==='ar'?'أنشئ سيرتك الذاتية المدنية بمساعدة الذكاء الاصطناعي':'Build your civilian CV with AI assistance', icon: icons.file, action: `openMentorWithTopic(\`${cvQ}\`)` },
+    { title: t('interviewSim'), desc: lang==='ar'?'تدرب على المقابلات المدنية بأسلوب STAR':'Practice civilian interviews using the STAR method', icon: icons.users, action: `openMentorWithTopic(\`${intQ}\`)` },
+    { title: t('sectorGuides'), desc: lang==='ar'?'استكشف قطاعات العمل المدني في الإمارات':'Explore UAE civilian employment sectors', icon: icons.compass, action: `openMentorWithTopic(\`${secQ}\`)` },
+    { title: t('financialPlan'), desc: lang==='ar'?'التقاعد والضرائب والميزانية الانتقالية':'Pensions, tax, and transition budgeting', icon: icons.bar, action: `openMentorWithTopic(\`${finQ}\`)` },
+    { title: lang==='ar'?'الحياة المدنية':'Civilian Life', desc: lang==='ar'?'السكن والرعاية الصحية والحقوق المدنية':'Housing, healthcare, and civilian rights', icon: icons.home, action: `openMentorWithTopic(\`${civQ}\`)` },
+    { title: t('skillsGuide'), desc: lang==='ar'?'ترجم مؤهلاتك العسكرية':'Translate your military qualifications', icon: icons.translate, action: "navigate('skills')" },
+    { title: lang==='ar'?'شبكة الخريجين':'Alumni Network', desc: lang==='ar'?'تواصل مع المتقاعدين الناجحين':'Connect with successful retirees', icon: icons.users, action: `openMentorWithTopic(\`${alumQ}\`)` },
+    { title: t('aiAdvisor'), desc: lang==='ar'?'استشارة مهنية فورية مدعومة بالذكاء الاصطناعي':'Instant AI-powered career guidance', icon: icons.chat, action: "navigate('mentor')" },
+  ];
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideJourney')}</div><h1 class="page-title">${t('resourcesTitle')}</h1><p class="page-desc">${t('resourcesDesc')}</p></div>
+  <div class="page-body">
+    <div class="info-banner animate-in">${icons.info}<div>${lang==='ar'?'بناءً على أفضل الممارسات الدولية (برنامج CTP البريطاني)، يشمل دعمنا الموارد المهنية والمالية والشخصية لانتقال شامل.':'Drawing on international best practice (UK Career Transition Partnership model), our support includes professional, financial, and personal resources for a holistic transition.'}</div></div>
+    <div class="resource-grid animate-in delay-1">
+    ${items.map(i => `<div class="resource-card" onclick="${i.action}" style="cursor:pointer"><div style="color:var(--slate-400)">${i.icon}</div><div class="resource-card-title">${i.title}</div><div class="resource-card-desc">${i.desc}</div></div>`).join('')}
+  </div></div>`;
+}
+
+// ═══ Wellbeing ═══
+function renderWellbeing() {
+  const moods = [
+    { val: 5, label: lang==='ar'?'ممتاز':'Excellent', color: 'var(--uae-green)' },
+    { val: 4, label: lang==='ar'?'جيد':'Good', color: 'var(--uae-green-soft)' },
+    { val: 3, label: lang==='ar'?'متوسط':'Okay', color: 'var(--accent-gold)' },
+    { val: 2, label: lang==='ar'?'قلق':'Concerned', color: 'var(--uae-red-soft)' },
+    { val: 1, label: lang==='ar'?'أحتاج دعم':'Need Support', color: 'var(--uae-red)' },
+  ];
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideJourney')}</div><h1 class="page-title">${t('wellbeingTitle')}</h1><p class="page-desc">${t('wellbeingDesc')}</p></div>
+  <div class="page-body"><div class="card animate-in">
+    <div style="display:flex;gap:0.75rem;justify-content:center;margin:1rem 0">
+      ${moods.map(m => `<div style="text-align:center;cursor:pointer;padding:0.75rem;border-radius:10px;border:2px solid ${state.wellbeingMood===m.val?m.color:'var(--slate-200)'};background:${state.wellbeingMood===m.val?'var(--slate-50)':'transparent'};min-width:80px" onclick="state.wellbeingMood=${m.val};render()">
+        <div style="font-size:1.5rem;color:${m.color};font-weight:700">${m.val}</div>
+        <div style="font-size:0.7rem;color:var(--slate-500);margin-top:0.2rem">${m.label}</div>
+      </div>`).join('')}
+    </div>
+  </div></div>`;
+}
+
+// ═══ Documents ═══
+function renderDocuments() {
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideOnboarding')}</div><h1 class="page-title">${t('sideDocs')}</h1></div>
+  <div class="page-body">
+    <div class="card animate-in"><div class="card-title">${lang==='ar'?'شهادات التأهيل':'Qualification Certificates'}</div>
+      <div class="upload-zone" onclick="addMockDocument('${lang==='ar'?'شهادة تدريب عسكري':'Military Training Certificate'}')">
+        <div style="color:var(--slate-400)">${icons.upload}</div>
+        <div style="font-size:0.85rem;color:var(--slate-500);margin-top:0.5rem">${lang==='ar'?'انقر للرفع':'Click to upload'}</div>
+      </div>
+    </div>
+    ${state.documents.length > 0 ? `<div class="card animate-in delay-1"><div class="card-title">${lang==='ar'?'المستندات المرفوعة':'Uploaded Documents'} (${state.documents.length})</div>
+      ${state.documents.map((d,i) => `<div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--slate-100)"><span style="font-size:0.8rem">${d}</span><span style="margin-${lang==='ar'?'right':'left'}:auto;font-size:0.7rem;color:var(--uae-red-soft);cursor:pointer" onclick="state.documents.splice(${i},1);render()">${lang==='ar'?'حذف':'Remove'}</span></div>`).join('')}
+    </div>` : ''}
+    <div style="display:flex;justify-content:flex-end;margin-top:1rem"><button class="btn btn-primary" onclick="navigate('programme')">${t('continue_')}</button></div>
+  </div>`;
+}
+
+// ═══ Transition Plan ═══
+function renderPlan() {
+  const name = state.profile.fullName || (lang==='ar'?'المرشح':'Candidate');
+  return `<div class="page-header"><div class="page-breadcrumb">${t('sideJourney')}</div><h1 class="page-title">${t('sidePlan')}</h1></div>
+  <div class="page-body">
+    <div class="plan-card animate-in"><div style="position:relative;z-index:1">
+      <div style="font-size:0.65rem;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.12em">${lang==='ar'?'خطة الانتقال لـ':'Transition Plan For'}</div>
+      <div class="plan-card-title">${name}</div>
+      <div class="plan-card-subtitle">${state.profile.rank||''} — ${state.profile.branch||''} — ${state.pathways.join(' + ')||''}</div>
+      <div style="display:flex;gap:2rem;margin-top:1rem">
+        <div><div style="font-size:1.4rem;font-weight:700;color:var(--white)">${state.profile.yearsService||'—'}</div><div style="font-size:0.65rem;color:var(--slate-400)">${t('yearsService')}</div></div>
+        <div><div style="font-size:1.4rem;font-weight:700;color:var(--white)">${state.englishScore||'—'}%</div><div style="font-size:0.65rem;color:var(--slate-400)">${t('englishLanguage')}</div></div>
+        <div><div style="font-size:1.4rem;font-weight:700;color:var(--white)">12</div><div style="font-size:0.65rem;color:var(--slate-400)">${lang==='ar'?'أشهر متبقية':'Months Remaining'}</div></div>
+      </div>
+    </div></div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// ADMIN PAGES
+// ═══════════════════════════════════════════════════
+function renderAdminDash() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'إدارة البرنامج':'Programme Management'}</div><h1 class="page-title">${t('adminDashTitle')}</h1><p class="page-desc">${t('adminDashDesc')}</p></div>
+  <div class="page-body">
+    <div class="metrics-row animate-in">
+      <div class="metric-card"><div class="metric-val">247</div><div class="metric-lbl">${t('totalCandidates')}</div></div>
+      <div class="metric-card gold"><div class="metric-val">183</div><div class="metric-lbl">${t('activePhase')}</div></div>
+      <div class="metric-card"><div class="metric-val">41</div><div class="metric-lbl">${t('placedEmployment')}</div></div>
+      <div class="metric-card red"><div class="metric-val">74%</div><div class="metric-lbl">${t('completionRate')}</div></div>
+    </div>
+    <div class="card animate-in delay-1"><div class="card-title">${t('candidatePipeline')}</div>
+      <table class="admin-table" style="margin-top:0.75rem">
+        <thead><tr><th>${lang==='ar'?'الاسم':'Name'}</th><th>${lang==='ar'?'الرتبة':'Rank'}</th><th>${lang==='ar'?'المسار':'Pathway'}</th><th>${lang==='ar'?'المرحلة':'Phase'}</th><th>${lang==='ar'?'الحالة':'Status'}</th></tr></thead>
+        <tbody>
+          <tr><td>Ahmed Al Mansoori</td><td>Colonel</td><td>${lang==='ar'?'التوظيف':'Employment'}</td><td>${lang==='ar'?'تدريب':'Training'}</td><td><span class="status-tag active">${lang==='ar'?'نشط':'Active'}</span></td></tr>
+          <tr><td>Khalid Al Shamsi</td><td>Major</td><td>${lang==='ar'?'ريادة الأعمال':'Entrepreneurship'}</td><td>${lang==='ar'?'حاضنة':'Incubation'}</td><td><span class="status-tag active">${lang==='ar'?'نشط':'Active'}</span></td></tr>
+          <tr><td>Fatima Al Hammadi</td><td>Captain</td><td>${lang==='ar'?'تعليم عالي':'Education'}</td><td>${lang==='ar'?'تقييم':'Assessment'}</td><td><span class="status-tag pending">${lang==='ar'?'قيد الانتظار':'Pending'}</span></td></tr>
+          <tr><td>Omar Al Dhaheri</td><td>Lt Colonel</td><td>${lang==='ar'?'التوظيف':'Employment'}</td><td>${lang==='ar'?'تم التوظيف':'Placed'}</td><td><span class="status-tag complete">${lang==='ar'?'مكتمل':'Complete'}</span></td></tr>
+          <tr><td>Mariam Al Ketbi</td><td>Major</td><td>${lang==='ar'?'التوظيف + ريادة':'Emp + Entrep'}</td><td>${lang==='ar'?'تدريب':'Training'}</td><td><span class="status-tag active">${lang==='ar'?'نشط':'Active'}</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderAdminCandidates() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'إدارة البرنامج':'Programme Management'}</div><h1 class="page-title">${t('sideCandidates')}</h1></div>
+  <div class="page-body"><div class="info-banner">${icons.info}<div>${lang==='ar'?'إدارة المرشحين الكاملة متاحة في النظام المنشور':'Full candidate management available in deployed system'}</div></div></div>`;
+}
+function renderAdminEmployers() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'إدارة البرنامج':'Programme Management'}</div><h1 class="page-title">${t('sideEmployers')}</h1></div>
+  <div class="page-body"><div class="info-banner">${icons.info}<div>${lang==='ar'?'إدارة أصحاب العمل متاحة في النظام المنشور':'Employer management available in deployed system'}</div></div></div>`;
+}
+function renderAdminReports() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'إدارة البرنامج':'Programme Management'}</div><h1 class="page-title">${t('sideReports')}</h1></div>
+  <div class="page-body"><div class="info-banner">${icons.info}<div>${lang==='ar'?'التقارير متاحة في النظام المنشور':'Reports available in deployed system'}</div></div></div>`;
+}
+
+// Partner pages
+function renderPartnerDash() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'بوابة الشريك':'Partner Portal'}</div><h1 class="page-title">${lang==='ar'?'لوحة الشريك':'Partner Dashboard'}</h1></div>
+  <div class="page-body">
+    <div class="metrics-row animate-in">
+      <div class="metric-card"><div class="metric-val">52</div><div class="metric-lbl">${lang==='ar'?'مرشحون متاحون':'Available Candidates'}</div></div>
+      <div class="metric-card gold"><div class="metric-val">8</div><div class="metric-lbl">${lang==='ar'?'شواغر نشطة':'Active Vacancies'}</div></div>
+      <div class="metric-card"><div class="metric-val">3</div><div class="metric-lbl">${lang==='ar'?'مقابلات مجدولة':'Interviews Scheduled'}</div></div>
+    </div>
+  </div>`;
+}
+function renderPartnerCandidates() { return renderAdminCandidates(); }
+function renderPartnerVacancies() {
+  return `<div class="page-header"><div class="page-breadcrumb">${lang==='ar'?'بوابة الشريك':'Partner Portal'}</div><h1 class="page-title">${lang==='ar'?'الوظائف الشاغرة':'Vacancies'}</h1></div>
+  <div class="page-body"><div class="info-banner">${icons.info}<div>${lang==='ar'?'إدارة الشواغر متاحة في النظام المنشور':'Vacancy management available in deployed system'}</div></div></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════
+const pageMap = {
+  'dashboard': renderDashboard, 'profile': renderProfile, 'documents': renderDocuments,
+  'programme': renderProgramme, 'pathways': renderPathways,
+  'assess-personality': renderPersonality, 'assess-english': renderEnglish, 'assess-technical': renderTechnical,
+  'results': renderResults, 'plan': renderPlan, 'skills': renderSkills,
+  'mentor': renderMentor, 'resources': renderResources, 'wellbeing': renderWellbeing,
+  'admin-dash': renderAdminDash, 'admin-candidates': renderAdminCandidates,
+  'admin-employers': renderAdminEmployers, 'admin-reports': renderAdminReports,
+  'partner-dash': renderPartnerDash, 'partner-candidates': renderPartnerCandidates,
+  'partner-vacancies': renderPartnerVacancies,
+};
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.screen === 'splash') { app.innerHTML = renderSplash(); return; }
+  const pageFn = pageMap[state.currentSection] || renderDashboard;
+  app.innerHTML = `<div class="app-layout">${renderSidebar()}<div class="main-content">${pageFn()}</div></div>`;
+}
+
+(function(){ try{
+  const n = localStorage.getItem('sf_user');
+  if (n) { if (!state.profile.fullName) state.profile.fullName = n;
+    state.role = 'candidate'; state.screen = 'app'; state.currentSection = 'dashboard'; }
+}catch(e){} })();
+render();
+</script>
+</body>
+</html>
