@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SkillsForge — Individual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --display:'Rajdhani','Noto Kufi Arabic',system-ui,sans-serif; --body:'Inter','Noto Kufi Arabic',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --brand:#0E4A33; --brand-bright:#177A53; --brand-deep:#052A1D; --brand-soft:#E4F0EA;
+    --gold:#B8892A; --gold-bright:#D4A035; --gold-soft:#F5EAD2;
+    --ink:#12261D; --muted:#5C7267; --canvas:#EEF3F0; --surface:#FFFFFF; --surface-2:#F5F8F6;
+    --line:#DCE6E1; --line-strong:#C4D3CB; --green:#177A53; --red:#B3452F;
+    --shadow:0 18px 50px rgba(5,42,29,.14); --shadow-soft:0 6px 20px rgba(5,42,29,.08);
+    --ribbon-top:60px; --ribbon-bot:34px;
+  }
+  [data-theme="dark"]{
+    --brand:#1E7A55; --brand-bright:#57C793; --brand-deep:#04150E; --brand-soft:rgba(23,122,83,.16);
+    --gold:#C9982F; --gold-bright:#E2B44A; --gold-soft:rgba(212,160,53,.14);
+    --ink:#E7F0EA; --muted:#8FA69A; --canvas:#0B120F; --surface:#141C17; --surface-2:#182420;
+    --line:#26332C; --line-strong:#37473E;
+    --shadow:0 18px 50px rgba(0,0,0,.5); --shadow-soft:0 6px 20px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden;height:100%}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:14.5px/1.5 var(--body);min-width:320px;height:100vh;height:100dvh;display:grid;grid-template-rows:var(--ribbon-top) minmax(0,1fr) var(--ribbon-bot);overflow:hidden}
+  h1,h2,h3{font-family:var(--display);margin:0}
+  button{font-family:inherit;cursor:pointer;color:inherit}
+  [dir="rtl"] .flip-rtl{direction:rtl}
+
+  /* ================= TOP RIBBON (layout locked in both languages) ================= */
+  .ribbon-top{background:var(--surface);border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 14px;gap:10px;z-index:30}
+  .rt-left{display:flex;align-items:center;gap:11px;justify-self:start}
+  .home-btn{display:flex;align-items:center;gap:11px;border:0;background:transparent;padding:0;text-align:left}
+  .mark{width:38px;height:38px;border-radius:50%;overflow:hidden;background:var(--brand-deep);box-shadow:0 0 0 1px rgba(255,255,255,.22),var(--shadow-soft);flex:none}
+  .mark img{width:100%;height:100%;display:block}
+  .brand strong{display:block;font:700 16.5px/1 var(--display);letter-spacing:.15em;color:var(--ink)}
+  .brand small{display:block;font:700 7.5px var(--mono);letter-spacing:.13em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .rt-centre{display:flex;align-items:center;gap:12px;justify-self:center}
+  .nav-arrow{width:34px;height:34px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface-2);font-size:17px;color:var(--brand);display:grid;place-items:center;transition:.14s}
+  .nav-arrow:hover{border-color:var(--brand-bright)}
+  .nav-arrow:disabled{opacity:.28;cursor:default}
+  .rt-title{min-width:170px;text-align:center}
+  .rt-title strong{display:block;font:700 15px var(--display);letter-spacing:.1em;text-transform:uppercase}
+  .rt-title small{display:block;font:700 8px var(--mono);letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-top:1px}
+  .rt-right{display:flex;align-items:center;gap:8px;justify-self:end}
+  .lang-toggle{display:flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
+  .lang-toggle button{border:0;background:var(--surface-2);padding:7px 10px;font:700 10px var(--mono);letter-spacing:.06em;color:var(--muted)}
+  .lang-toggle button.on{background:var(--brand);color:#fff}
+  .icon-btn{width:34px;height:34px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface-2);display:grid;place-items:center;transition:.14s}
+  .icon-btn:hover{border-color:var(--brand-bright)}
+  .icon-btn svg{width:16px;height:16px;fill:none;stroke:var(--brand);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  [data-theme="dark"] .moon-icon{display:none}
+  [data-theme="light"] .sun-icon{display:none}
+
+  /* ================= BOTTOM RIBBON ================= */
+  .ribbon-bot{background:var(--brand-deep);color:#CFE0D6;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 14px;font:700 8.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+  .rb-left{justify-self:start}
+  .rb-centre{justify-self:center;color:#E9D9AE}
+  .rb-right{justify-self:end;display:flex;gap:12px}
+  .rb-dot{color:var(--gold-bright)}
+
+  /* ================= STAGE (no-scroll: pinned actions, inner scroll only) ================= */
+  .stage{min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:0 clamp(14px,3vw,34px)}
+  .stage-head{padding:12px 0 4px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .stage-head h1{font-size:clamp(21px,2.6vw,28px);letter-spacing:.01em}
+  .stage-head .lead{color:var(--muted);margin:2px 0 0;font-size:13px}
+  .assist{display:flex;gap:10px;align-items:center;background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 22%,var(--line));border-radius:11px;padding:9px 12px;max-width:560px}
+  .assist-orb{width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font:700 9px var(--mono);flex:none}
+  .assist p{margin:0;font-size:11.5px;color:var(--ink)}
+  .stage-body{min-height:0;overflow-y:auto;padding:8px 2px 10px}
+  .stage-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0 14px;border-top:1px solid var(--line)}
+  .btn{border:1.5px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);padding:11px 20px;font:700 12.5px var(--display);letter-spacing:.06em;text-transform:uppercase;transition:.14s}
+  .btn:hover{border-color:var(--brand-bright)}
+  .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn.primary:hover{background:var(--brand-bright)}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:transparent}
+  .info-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font:700 11px var(--mono);display:inline-grid;place-items:center;vertical-align:middle;margin-left:6px;padding:0}
+  [dir="rtl"] .info-dot{margin-left:0;margin-right:6px}
+
+  /* ================= LANDING: mode wheel ================= */
+  .landing{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(10px,3vw,50px);min-height:0;height:100%}
+  .landing-copy h1{font-size:clamp(34px,4.4vw,54px);letter-spacing:.06em}
+  .landing-copy .strap{color:var(--gold);font:700 clamp(10px,1.1vw,12px) var(--mono);letter-spacing:.13em;text-transform:uppercase;margin:10px 0 14px}
+  .landing-copy p{color:var(--muted);max-width:480px;margin:0;font-size:14.5px}
+  .mode-wheel-wrap{display:grid;place-items:center;min-height:0}
+  .mode-wheel{width:min(400px,72vw,58vh);aspect-ratio:1;user-select:none}
+  .mw-seg{cursor:pointer}
+  .mw-seg path{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.5;transition:.16s}
+  .mw-seg:hover path{fill:var(--brand-soft);stroke:var(--brand-bright)}
+  .mw-seg text{font:700 15px var(--display);letter-spacing:.14em;fill:var(--ink)}
+  .mw-seg.dim path{stroke-dasharray:4 4}
+  .mw-ticks line{stroke:var(--line-strong);stroke-width:1}
+  .mw-ring{fill:none;stroke:var(--gold);stroke-width:1.2;opacity:.55}
+  .mw-ring2{fill:none;stroke:var(--line-strong);stroke-width:1;stroke-dasharray:2 6}
+  .mw-centre-mark{filter:drop-shadow(0 6px 14px rgba(5,42,29,.3))}
+
+  /* ================= CHIPS / BUBBLES ================= */
+  .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .chip{position:relative;border:1.5px solid var(--line-strong);border-radius:11px;background:var(--surface);padding:12px 12px;text-align:start;transition:.14s;display:flex;flex-direction:column;gap:2px;min-height:58px}
+  .chip:hover{border-color:var(--brand-bright)}
+  .chip.on{border-color:var(--brand);background:var(--brand-soft);box-shadow:inset 0 0 0 1px var(--brand)}
+  .chip strong{font:700 13.5px var(--display);letter-spacing:.02em}
+  .chip small{font-size:10px;color:var(--muted);line-height:1.3}
+  .chip .tick{position:absolute;inset-inline-end:10px;top:9px;color:var(--brand);font-weight:900;opacity:0;transition:.14s}
+  .chip.on .tick{opacity:1}
+  .fam{margin:0 0 10px}
+  .fam-name{font:700 10px var(--mono);letter-spacing:.08em;color:var(--gold);text-transform:uppercase;margin:0 0 6px}
+  .bubbles{display:flex;flex-wrap:wrap;gap:7px}
+  .bubble{border:1.5px solid var(--line-strong);border-radius:99px;background:var(--surface);padding:6.5px 12px;font-size:11.5px;font-weight:600;transition:.13s;display:inline-flex;align-items:center;gap:6px}
+  .bubble:hover{border-color:var(--brand-bright)}
+  .bubble.on{border-color:var(--brand);background:var(--brand);color:#fff}
+  .bubble.sugg{border-style:dashed;border-color:var(--gold)}
+  .bubble.on.sugg{border-style:solid}
+  .bubble .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex:none}
+  .bubble.on .dot{background:#fff}
+  .two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;min-height:0;height:100%}
+  .col-scroll{min-height:0;overflow-y:auto;padding-inline-end:6px}
+  .side-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow-soft)}
+  textarea,input.text,select.sel{width:100%;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--surface-2);padding:10px 11px;font:13.5px var(--body);color:var(--ink);resize:vertical}
+  textarea:focus,input.text:focus,select.sel:focus{outline:none;border-color:var(--brand-bright)}
+  label.fl{display:block;font:700 9.5px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 6px}
+  .optional{color:var(--gold);font-weight:700}
+
+  /* ================= MASTERY DIAL (chronometer) ================= */
+  .dial-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center;height:100%;min-height:0}
+  .dial-wrap{display:grid;place-items:center;min-height:0}
+  .dial{width:min(380px,70vw,52vh);user-select:none}
+  .dial .face{fill:var(--surface);stroke:var(--line-strong);stroke-width:1.5}
+  .dial .ring{fill:none;stroke:var(--gold);stroke-width:1;opacity:.6}
+  .dial .ring2{fill:none;stroke:var(--line-strong);stroke-width:1;stroke-dasharray:2 5}
+  .dial .tick-min{stroke:var(--line-strong);stroke-width:1}
+  .dial .tick-maj{stroke:var(--gold);stroke-width:2}
+  .dial .stop{cursor:pointer}
+  .dial .stop circle{fill:var(--surface-2);stroke:var(--line-strong);stroke-width:1.5;transition:.15s}
+  .dial .stop:hover circle{stroke:var(--brand-bright)}
+  .dial .stop.on circle{fill:var(--brand);stroke:var(--brand)}
+  .dial .stop text{font:700 11px var(--mono);fill:var(--muted)}
+  .dial .stop.on text{fill:#fff}
+  .dial .needle{stroke:var(--brand);stroke-width:3;stroke-linecap:round;transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+  .dial .needle-hub{fill:var(--gold)}
+  .dial .arc-fill{fill:none;stroke:var(--brand-bright);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .35s}
+  .dial-read strong{display:block;font:700 30px var(--display);color:var(--brand-bright)}
+  .dial-read .qfe{font:700 10px var(--mono);letter-spacing:.08em;color:var(--gold)}
+  .dial-read p{color:var(--muted);font-size:13px;max-width:380px;margin:8px 0 0}
+
+  /* ================= RESULT ================= */
+  .matrix{width:100%;border-collapse:collapse;font-size:12px}
+  .matrix th{text-align:start;font:700 8.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:0 10px 7px;border-bottom:1px solid var(--line-strong)}
+  .matrix td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  .matrix td.comp strong{display:block;font:700 12.5px var(--display);color:var(--ink)}
+  .matrix td.comp small{color:var(--muted);font-size:10px}
+  .matrix td.ctx{color:var(--muted);font-size:11px}
+  .brief-badge{font:700 8.5px var(--mono);letter-spacing:.13em;color:var(--gold);text-transform:uppercase}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow-soft);margin-bottom:12px}
+  .align-row{display:grid;grid-template-columns:150px minmax(0,1fr) 42px;gap:12px;align-items:center;padding:6px 0}
+  .align-row .nm{font:700 11.5px var(--display)}
+  .align-track{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+  .align-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--brand-bright))}
+  .align-pct{font:700 11.5px var(--mono);text-align:end;color:var(--brand-bright)}
+  .role{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 14px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .role strong{font:700 12.5px var(--display)}
+  .role .sector{font:700 8.5px var(--mono);letter-spacing:.05em;color:var(--gold);text-transform:uppercase;white-space:nowrap}
+  .role .why{grid-column:1/-1;font-size:10.5px;color:var(--muted)}
+  em{background:var(--gold-soft);font-style:normal;padding:0 2px;border-radius:3px}
+
+  /* ================= MODALS ================= */
+  .modal-back{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(4,21,14,.5);display:grid;place-items:center;z-index:50;padding:20px}
+  .modal{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);max-width:460px;width:100%;padding:20px;position:relative;max-height:82vh;overflow-y:auto}
+  .modal h3{font-size:17px;letter-spacing:.05em;margin-bottom:10px}
+  .modal p,.modal li{font-size:12.5px;color:var(--muted)}
+  .modal .close-x{position:absolute;inset-inline-end:12px;top:10px;border:0;background:transparent;font-size:19px;color:var(--muted)}
+  .set-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+  .set-row:last-child{border-bottom:0}
+  .set-row .set-lbl strong{display:block;font-size:12.5px;color:var(--ink)}
+  .set-row .set-lbl small{color:var(--muted);font-size:10.5px}
+
+  /* ================= RESPONSIVE ================= */
+  @media(max-width:860px){
+    .landing{grid-template-columns:1fr;gap:8px;text-align:center;align-content:center}
+    .landing-copy p{margin:0 auto}
+    .dial-stage{grid-template-columns:1fr;gap:8px;text-align:center}
+    .dial-read p{margin:6px auto 0}
+    .two-col{grid-template-columns:1fr;height:auto}
+    .brand small{display:none}
+    .rt-title{min-width:0}
+    .rt-title small{display:none}
+    body{overflow:auto;height:auto;min-height:100dvh}
+    .stage-body{overflow:visible}
+    .ribbon-top{position:sticky;top:0}
+    .ribbon-bot{position:fixed;bottom:0;left:0;right:0}
+    .stage{padding-bottom:44px}
+  }
+  @media print{ .ribbon-top,.ribbon-bot,.stage-actions,.assist{display:none} body{display:block;height:auto;overflow:visible} .stage-body{overflow:visible} }
+</style>
+</head>
+<body>
+
+<header class="ribbon-top" dir="ltr">
+  <div class="rt-left">
+    <button class="home-btn" onclick="go('landing')" aria-label="Home">
+      <span class="mark"><img id="brandMark" alt=""></span>
+      <span class="brand"><strong>SKILLS FORGE</strong><small>Prometheus Education Systems</small></span>
+    </button>
+  </div>
+  <div class="rt-centre">
+    <button class="nav-arrow" id="navBack" onclick="navBack()" aria-label="Back">←</button>
+    <div class="rt-title"><strong id="rtTitle">—</strong><small id="rtSub"></small></div>
+    <button class="nav-arrow" id="navNext" onclick="navNext()" aria-label="Next">→</button>
+  </div>
+  <div class="rt-right">
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button id="langEN" class="on" onclick="setLang('en')">EN</button>
+      <button id="langAR" onclick="setLang('ar')">AR</button>
+    </div>
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Theme">
+      <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openModal('settings')" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 13.4v-2.8l-2-.7a7.8 7.8 0 0 0-.7-1.6l.9-1.9-2-2-1.9.9a7.8 7.8 0 0 0-1.6-.7l-.7-2H8.4l-.7 2a7.8 7.8 0 0 0-1.6.7l-1.9-.9-2 2 .9 1.9a7.8 7.8 0 0 0-.7 1.6l-2 .7v2.8l2 .7c.2.6.4 1.1.7 1.6l-.9 1.9 2 2 1.9-.9c.5.3 1 .5 1.6.7l.7 2h2.8l.7-2c.6-.2 1.1-.4 1.6-.7l1.9.9 2-2-.9-1.9c.3-.5.5-1 .7-1.6l2-.7z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="app" class="stage"></main>
+
+<footer class="ribbon-bot" dir="ltr">
+  <span class="rb-left">PROMETHEUS EDUCATION SYSTEMS</span>
+  <span class="rb-centre" id="rbCentre">SKILLSFORGE · INDIVIDUAL</span>
+  <span class="rb-right"><span id="rbMode">DETERMINISTIC · SEED SET</span><span class="rb-dot">●</span><span>v0.5</span></span>
+</footer>
+
+<div id="modalHost"></div>
+
+<script src="assets/roundel.js"></script>
+<script>
+/* ====================== ENGINE (validated, from v1) ====================== */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+const FAMILIES={CA:{name:"Cognitive & Analytical"},CM:{name:"Communication & Influence"},DD:{name:"Digital & Data"},LM:{name:"Leadership & Management"},OD:{name:"Operational & Domain"},PS:{name:"Personal & Social"}};
+
+const MASTERY=[
+ {level:1,name:"Awareness",desc:"Recognises the concept, its language and its relevance to role.",qfe:"QFE 3–4"},
+ {level:2,name:"Foundation",desc:"Applies under guidance in routine, structured settings.",qfe:"QFE 4–5"},
+ {level:3,name:"Proficient",desc:"Applies independently across varied, less predictable settings.",qfe:"QFE 5–6"},
+ {level:4,name:"Advanced",desc:"Leads practice, integrates across functions and evaluates outcomes.",qfe:"QFE 6–7"},
+ {level:5,name:"Expert",desc:"Shapes doctrine and policy, innovates and advises at strategic level.",qfe:"QFE 7–8"}
+];
+
+const TAXONOMY=[
+ {id:"CA1",family:"CA",name:"Critical thinking",lo:"test assumptions and competing explanations",pat:["critical think","critically","challenge assumptions","objective analysis","sound judgement","sound judgment","rigorous analysis"],reg:{mil:"Interrogated operational reporting and challenged planning assumptions before commitment of forces.",mgmt:"Tests assumptions and evidence before decisions; brings independent, rigorous judgement to proposals.",acad:"critically evaluate evidence, assumptions and competing explanations"}},
+ {id:"CA2",family:"CA",name:"Analytical reasoning & structured techniques",lo:"apply structured analytic techniques to complex problems",pat:["structured analytic","all-source","analytical rigour","analytical rigor","analytical skills","analytic tradecraft","competing hypotheses"],reg:{mil:"Produced all-source assessments using structured analytic techniques under time pressure.",mgmt:"Structures ambiguous problems into testable questions and defensible analysis.",acad:"apply recognised structured analytic techniques to ill-defined problems"}},
+ {id:"CA3",family:"CA",name:"Problem solving",lo:"resolve complex, novel problems with practical solutions",pat:["problem solving","problem-solving","solve complex","innovative solutions","practical solutions"],reg:{mil:"Delivered workable solutions to emergent operational problems with the resources to hand.",mgmt:"Finds pragmatic, resource-aware solutions to novel business problems.",acad:"formulate and justify solutions to complex, novel problems"}},
+ {id:"CA4",family:"CA",name:"Decision-making under uncertainty",lo:"make timely, defensible decisions with incomplete information",pat:["decision making","decision-making","decisions under pressure","time-sensitive","incomplete information","under uncertainty","high-pressure decisions"],reg:{mil:"Made time-sensitive command decisions on incomplete information in high-threat environments.",mgmt:"Comfortable making accountable calls at pace when the picture is incomplete.",acad:"make and justify timely decisions under conditions of uncertainty and risk"}},
+ {id:"CA5",family:"CA",name:"Strategic foresight",lo:"anticipate change with horizon scanning and scenarios",pat:["foresight","horizon scanning","scenario planning","future trends","anticipate change","futures analysis"],reg:{mil:"Contributed to future-force and threat-horizon assessments informing capability planning.",mgmt:"Uses horizon scanning and scenarios to position the organisation ahead of change.",acad:"apply foresight and scenario methods to anticipate strategic change"}},
+ {id:"CM1",family:"CM",name:"Professional report writing",lo:"produce clear, accurate written products for decision-makers",pat:["report writing","written reports","drafting","staff work","written communication","prepare reports","written products","briefing papers"],reg:{mil:"Drafted operational reports, post-exercise reports and formal staff work to command standards.",mgmt:"Writes crisp, decision-ready papers and reports for senior audiences.",acad:"produce accurate, well-structured written products for professional audiences"}},
+ {id:"CM2",family:"CM",name:"Briefing & presentation",lo:"deliver concise oral briefings to senior audiences",pat:["briefing","brief senior","presentation","present findings","oral communication","deliver briefs"],reg:{mil:"Briefed commanders and multinational staffs on operations, threat and risk.",mgmt:"Presents complex material to boards and executives with clarity and economy.",acad:"deliver structured oral briefings appropriate to senior decision-makers"}},
+ {id:"CM3",family:"CM",name:"Negotiation & influence",lo:"negotiate and influence across organisational boundaries",pat:["negotiat","influence","persuas","build consensus","conflict resolution"],reg:{mil:"Negotiated coordination measures and de-confliction with partner forces and host authorities.",mgmt:"Influences without authority; negotiates durable agreements across stakeholders.",acad:"apply negotiation and influencing strategies in multi-party settings"}},
+ {id:"CM4",family:"CM",name:"Bilingual communication (English/Arabic)",lo:"communicate professionally in English and Arabic settings",pat:["arabic","bilingual","english and arabic","both languages"],reg:{mil:"Operated with Arabic-speaking partners and interpreters in coalition settings.",mgmt:"Works comfortably across English- and Arabic-language professional environments.",acad:"communicate effectively in bilingual English and Arabic professional contexts"}},
+ {id:"CM5",family:"CM",name:"Media & public communication",lo:"manage public information and media engagement",pat:["media","public information","press","spokesperson","public communication","crisis communication"],reg:{mil:"Supported information activities and media handling during operations.",mgmt:"Manages public messaging and media relationships, including under pressure.",acad:"plan and manage public communication, including in crisis conditions"}},
+ {id:"DD1",family:"DD",name:"Data analysis & visualisation",lo:"analyse and visualise data to support decisions",pat:["data analysis","data analytics","dashboards","statistical","data-driven","visualisation","visualization","power bi","excel"],reg:{mil:"Fused sensor, reporting and database feeds into a common operating picture.",mgmt:"Turns raw data into dashboards and insight that leadership actually uses.",acad:"analyse and visualise data sets to support evidence-based decisions"}},
+ {id:"DD2",family:"DD",name:"AI & emerging technology literacy",lo:"evaluate and apply AI and emerging technologies responsibly",pat:["artificial intelligence"," ai ","machine learning","emerging technolog","automation","large language","autonomous systems"],reg:{mil:"Integrated new sensors, autonomy and decision-support tools into operational procedures.",mgmt:"Assesses where AI and emerging technology genuinely add value, and governs their use.",acad:"evaluate the application and governance of AI and emerging technologies"}},
+ {id:"DD3",family:"DD",name:"Cybersecurity awareness",lo:"apply cybersecurity principles to protect information",pat:["cyber","information security","network security","digital threats","information assurance"],reg:{mil:"Enforced operations security and defensive cyber discipline across networked systems.",mgmt:"Embeds cyber hygiene and information-security practice into everyday operations.",acad:"apply cybersecurity principles to organisational information and systems"}},
+ {id:"DD4",family:"DD",name:"Geospatial analysis",lo:"apply geospatial tools and imagery to operational questions",pat:["gis","geospatial","imagery","satellite","mapping systems","spatial analysis"],reg:{mil:"Exploited charts, imagery and geospatial systems for planning and targeting support.",mgmt:"Uses geospatial analysis to ground planning and resource decisions in place-based evidence.",acad:"apply geospatial analysis and imagery to operational problems"}},
+ {id:"DD5",family:"DD",name:"OSINT & digital research",lo:"conduct disciplined open-source research and verification",pat:["osint","open source intelligence","open-source intelligence","social media analysis","digital research","online research"],reg:{mil:"Exploited open-source reporting to cue and corroborate classified collection.",mgmt:"Researches and verifies open-source information with a disciplined, sceptical method.",acad:"conduct and document open-source research to verifiable standards"}},
+ {id:"LM1",family:"LM",name:"Team leadership",lo:"lead, develop and hold teams to standard",pat:["lead a team","team leader","leadership","supervise","mentor","line management","led teams"],reg:{mil:"Commanded and mentored mixed-rank teams in demanding operational conditions.",mgmt:"Builds, develops and holds accountable high-performing teams.",acad:"lead and develop teams to defined performance standards"}},
+ {id:"LM2",family:"LM",name:"Programme & project management",lo:"plan and deliver projects to time, cost and quality",pat:["project management","programme management","pmp","prince2","milestones","deliverables","work packages","project delivery"],reg:{mil:"Planned and executed complex operations and exercises through formal estimate and orders processes.",mgmt:"Delivers programmes and projects to time, cost and quality with disciplined controls.",acad:"plan, control and deliver projects using recognised methods"}},
+ {id:"LM3",family:"LM",name:"Resource & budget management",lo:"manage budgets, logistics and resources accountably",pat:["budget","resource management","procurement","logistics","manpower","financial management"],reg:{mil:"Accounted for personnel, equipment and logistics across sustained operations.",mgmt:"Manages budgets, procurement and resources with full accountability.",acad:"manage financial and material resources accountably against plans"}},
+ {id:"LM4",family:"LM",name:"Change & transformation",lo:"lead organisational change and capability transformation",pat:["change management","transformation","organisational change","organizational change","modernisation","modernization","capability development"],reg:{mil:"Introduced new capability and procedures across formations, managing the human factors of change.",mgmt:"Leads change programmes end to end — case, coalition, delivery, embedding.",acad:"plan and lead organisational change and capability development"}},
+ {id:"LM5",family:"LM",name:"Stakeholder engagement",lo:"build and sustain multi-agency stakeholder relationships",pat:["stakeholder","interagency","inter-agency","liaison","partner agencies","coordination with","government entities"],reg:{mil:"Maintained liaison with host-nation, coalition and civil authorities throughout operations.",mgmt:"Builds trusted relationships across agencies, partners and government entities.",acad:"manage stakeholder relationships across organisational boundaries"}},
+ {id:"OD1",family:"OD",name:"Risk assessment & management",lo:"assess, register and manage operational risk",pat:["risk assessment","risk management","risk register","risk analysis","mitigation","risk-based"],reg:{mil:"Owned the operational risk assessment and mitigation plan for force protection and mission delivery.",mgmt:"Runs a live risk process — identification, ownership, mitigation, escalation.",acad:"conduct and manage risk assessments using recognised frameworks"}},
+ {id:"OD2",family:"OD",name:"Incident command & control",lo:"exercise incident command within a recognised C2 structure",pat:["incident command","command and control","incident management","gold silver bronze","command centre","command center","operations room"],reg:{mil:"Exercised command and control of maritime task elements during live operations.",mgmt:"Takes and holds incident command, working a recognised command structure under pressure.",acad:"exercise incident command within a recognised command-and-control framework"}},
+ {id:"OD3",family:"OD",name:"Crisis & emergency response coordination",lo:"coordinate multi-agency crisis and emergency response",pat:["crisis management","emergency response","crisis response","emergency management","disaster response","mass casualty","emergency preparedness","disaster management"],reg:{mil:"Coordinated military support to civil authorities during crisis and disaster response.",mgmt:"Coordinates multi-agency response through the full crisis cycle — readiness to recovery.",acad:"plan and coordinate multi-agency crisis and emergency response"}},
+ {id:"OD4",family:"OD",name:"Business continuity & recovery",lo:"design and exercise continuity and recovery arrangements",pat:["business continuity","continuity of operations","recovery planning","resilience planning","continuity plans"],reg:{mil:"Maintained mission continuity through redundancy, alternate command arrangements and battle rhythm.",mgmt:"Designs, tests and maintains continuity and recovery plans that survive contact with reality.",acad:"design and evaluate business continuity and recovery arrangements"}},
+ {id:"OD5",family:"OD",name:"Intelligence collection & tradecraft",lo:"plan collection and apply sound tradecraft",pat:["intelligence collection","collection plan","humint","sigint","tradecraft","intelligence cycle","source handling","collection management"],reg:{mil:"Directed collection assets against priority intelligence requirements through the intelligence cycle.",mgmt:"Plans information gathering lawfully and systematically against defined requirements.",acad:"plan intelligence collection against requirements using sound tradecraft"}},
+ {id:"OD6",family:"OD",name:"Intelligence analysis & assessment",lo:"produce assessed intelligence with confidence levels",pat:["intelligence analysis","intelligence assessment","intelligence analyst","fusion","indicators and warning","threat picture","assessments"],reg:{mil:"Produced fused intelligence assessments with stated confidence for operational commanders.",mgmt:"Turns fragmentary information into assessed judgements with explicit confidence.",acad:"produce intelligence assessments with explicit confidence and provenance"}},
+ {id:"OD7",family:"OD",name:"Threat & vulnerability assessment",lo:"assess threats and vulnerabilities to prioritise protection",pat:["threat assessment","vulnerability assessment","threat analysis","red team","threat and vulnerability"],reg:{mil:"Assessed adversary capability and intent against own-force vulnerabilities.",mgmt:"Prioritises protective effort through structured threat and vulnerability assessment.",acad:"conduct threat and vulnerability assessments to prioritise mitigation"}},
+ {id:"OD8",family:"OD",name:"Investigation & evidence handling",lo:"conduct investigations preserving evidential integrity",pat:["investigation","evidence","chain of custody","interview","case file","forensic","investigative"],reg:{mil:"Conducted service investigations preserving evidential standards and procedural fairness.",mgmt:"Runs fair, documented investigations that would survive external scrutiny.",acad:"conduct investigations that preserve evidential integrity and fairness"}},
+ {id:"OD9",family:"OD",name:"Security operations & physical security",lo:"plan and run physical security operations",pat:["physical security","access control","security operations","guard force","surveillance","patrol","protective security"],reg:{mil:"Planned force protection, access control and patrol regimes for high-value sites.",mgmt:"Designs layered physical security that balances protection with operations.",acad:"plan and evaluate physical security and protective operations"}},
+ {id:"OD10",family:"OD",name:"Counter-terrorism awareness",lo:"apply counter-terrorism and CVE principles in role",pat:["counter-terrorism","counter terrorism","counterterrorism","violent extremism","cve","terrorist threat"],reg:{mil:"Operated within counter-terrorism force postures and threat-warning regimes.",mgmt:"Applies counter-terrorism awareness and escalation practice across the organisation.",acad:"apply counter-terrorism and countering-violent-extremism principles"}},
+ {id:"OD11",family:"OD",name:"Critical infrastructure & border protection",lo:"protect critical infrastructure and border integrity",pat:["critical infrastructure","border","customs","ports of entry","maritime security","infrastructure protection","key points"],reg:{mil:"Protected critical national infrastructure and contributed to maritime security operations.",mgmt:"Manages protection regimes for critical infrastructure and controlled boundaries.",acad:"evaluate protection regimes for critical infrastructure and borders"}},
+ {id:"PS1",family:"PS",name:"Adaptability & resilience",lo:"sustain performance through pressure and change",pat:["adaptab","personal resilience","work under pressure","fast-paced","demanding environment","austere","resilient"],reg:{mil:"Sustained performance through extended operations in austere, high-pressure conditions.",mgmt:"Stays effective through ambiguity, setbacks and sustained pressure.",acad:"sustain professional performance under pressure and through change"}},
+ {id:"PS2",family:"PS",name:"Ethics, integrity & accountability",lo:"act with integrity and hold decisions accountable",pat:["ethic","integrity","accountab","confidentiality","code of conduct","professional standards"],reg:{mil:"Upheld service values and the law of armed conflict; accountable for command decisions.",mgmt:"Holds self and others to ethical standards; owns decisions and their consequences.",acad:"apply ethical and professional standards with personal accountability"}},
+ {id:"PS3",family:"PS",name:"Cultural intelligence",lo:"work effectively across cultures and communities",pat:["cultural","cross-cultural","multinational","diverse teams","community engagement"],reg:{mil:"Operated effectively within multinational forces and host-nation communities.",mgmt:"Reads and respects cultural context; effective across diverse teams and communities.",acad:"apply cultural intelligence in diverse professional settings"}},
+ {id:"PS4",family:"PS",name:"Collaboration & interagency working",lo:"deliver outcomes through joint and multi-agency working",pat:["collaborat","joint operations","multi-agency","multiagency","teamwork","work closely with","joint working"],reg:{mil:"Delivered effect through joint, combined and interagency task organisation.",mgmt:"Gets results through genuine collaboration across teams and agencies.",acad:"work collaboratively across agencies to deliver shared outcomes"}}
+];
+const SKILL=Object.fromEntries(TAXONOMY.map(s=>[s.id,s]));
+
+const PROGRAMMES=[
+ {id:"DM",name:"Disaster Management",w:{OD3:5,OD1:5,OD4:5,OD2:4,LM5:4,CA4:4,PS1:4,PS4:4,CM5:3,DD1:3,DD4:3,LM2:3,CM2:3,CM1:3,OD11:3,CA5:3,LM3:3,PS2:3,CM4:3,DD2:2}},
+ {id:"DS",name:"Defence & Security",w:{LM1:5,OD2:4,CA1:4,CA4:4,CA5:4,OD7:4,OD10:4,OD11:4,LM3:4,CM1:4,CM2:4,PS2:4,PS4:4,OD5:3,OD6:3,LM2:3,DD2:3,DD3:3,PS3:3,LM4:3,CM4:3}},
+ {id:"HS",name:"Homeland Security",w:{OD11:5,OD10:4,OD7:4,OD1:4,DD3:4,LM5:4,PS4:4,PS2:4,OD3:3,OD6:3,CM5:3,CA2:3,DD5:3,CM4:3,LM1:3,DD1:3,CA4:3,DD2:3}},
+ {id:"PL",name:"Policing & Security",w:{OD8:5,PS2:5,OD9:4,PS4:4,CM3:3,LM1:3,OD1:3,CM1:3,DD5:3,OD10:3,PS3:3,CA1:3,CA3:3,CM4:3,OD3:2,CM2:2,DD1:2,DD3:2}},
+ {id:"IA",name:"Intelligence Analysis",w:{OD6:5,CA2:5,CA1:5,CM1:5,OD5:4,DD5:4,DD1:4,CM2:4,CA5:4,OD7:4,DD2:4,PS2:4,DD4:3,CA4:3,OD10:3,CM4:3,PS4:3,DD3:3}}
+];
+
+function extractSkills(text){
+  const low=(" "+String(text||"").toLowerCase().replace(/\s+/g," ")+" ");
+  const hits=[];
+  for(const s of TAXONOMY){
+    let matches=0; const evidence=[];
+    for(const p of s.pat){ let idx=low.indexOf(p);
+      if(idx>=0){ matches++;
+        const a=Math.max(0,idx-30),b=Math.min(low.length,idx+p.length+40);
+        if(evidence.length<2) evidence.push("…"+esc(low.slice(a,idx))+"<em>"+esc(low.slice(idx,idx+p.length))+"</em>"+esc(low.slice(idx+p.length,b))+"…"); } }
+    if(matches>0) hits.push({id:s.id,matches,evidence,conf:Math.min(96,45+17*matches)});
+  }
+  hits.sort((a,b)=>b.matches-a.matches);
+  return hits;
+}
+function alignment(ids,prog){
+  const S=Object.fromEntries(ids.map(id=>[id,1]));
+  let num=0,den=0;
+  for(const [id,w] of Object.entries(prog.w)){ den+=w; num+=(S[id]?1:0)*w; }
+  return den?Math.round(100*num/den):0;
+}
+
+/* ============================ WIZARD DATA ============================ */
+// Backgrounds -> suggested skill ids (the assistant pre-selects these; the user can change them).
+const BACKGROUNDS=[
+ {id:"military",label:"Military / Defence",hint:"Any service — command, operations, staff.",skills:["LM1","OD2","CA4","CA1","LM2","CM1","CM2","PS1","PS2","OD5","OD6","LM5","PS4","LM3"]},
+ {id:"policing",label:"Policing",hint:"Investigation, patrol, professional standards.",skills:["OD8","OD9","PS2","CM3","OD1","LM1","DD5","PS4","CA1"]},
+ {id:"emergency",label:"Emergency & Disaster",hint:"Response, preparedness, civil protection.",skills:["OD3","OD1","OD4","OD2","LM5","CA4","PS1","CM5","PS4"]},
+ {id:"intelligence",label:"Intelligence",hint:"Collection, analysis, assessment.",skills:["OD6","OD5","CA2","CA1","DD5","CM1","DD1","OD7","CM2"]},
+ {id:"homeland",label:"Border / Homeland",hint:"Critical infrastructure, borders, CT.",skills:["OD11","OD10","OD7","OD9","DD3","OD1","PS4"]},
+ {id:"government",label:"Government / Public",hint:"Policy, programmes, public administration.",skills:["LM2","LM3","LM5","CM1","PS2","CA5","LM4","CM2"]},
+ {id:"privatesec",label:"Private Security",hint:"Corporate, protective, risk services.",skills:["OD9","OD7","OD1","PS2","LM1","OD10"]},
+ {id:"other",label:"Something else",hint:"Add detail below and let the assistant map it.",skills:[]}
+];
+
+// Role suggestions (drawn from the competency-conversion briefing) ranked by overlap with selected skills.
+const ROLES=[
+ {title:"Head of Crisis Management / Business Continuity",sector:"Critical infrastructure, energy, finance",skills:["OD3","OD1","OD4","CA4","LM2","OD2"]},
+ {title:"Director of Operations / COO",sector:"Cross-sector",skills:["LM1","LM3","CM2","OD2","LM2","LM5"]},
+ {title:"Intelligence Analyst / Head of Threat Intelligence",sector:"Defence, national security, consultancy",skills:["OD6","OD5","CA2","DD5","OD7","CA1"]},
+ {title:"Programme Director / Senior Programme Manager",sector:"Government, major programmes",skills:["LM2","LM3","LM5","PS4","CA5","LM4"]},
+ {title:"Head of Training & Organisational Development",sector:"Education, corporate L&D",skills:["LM4","CM1","CM2","PS2","LM1"]},
+ {title:"Security Consultant / Risk Advisory Lead",sector:"Consultancy, private security",skills:["OD7","OD1","DD3","PS2","OD9","OD10"]},
+ {title:"Regulatory & Compliance Director",sector:"Finance, defence procurement, healthcare",skills:["PS2","OD1","CM1","LM5","CA1"]},
+ {title:"Emergency Services Coordinator / Civil Protection Lead",sector:"Government, emergency services",skills:["OD3","OD2","LM5","CM5","PS4","CA4"]},
+ {title:"Cyber Security Strategy Manager",sector:"Defence, technology, finance",skills:["DD3","DD2","OD7","DD1","CA2"]},
+ {title:"International Affairs / Defence Engagement Advisor",sector:"Government, diplomacy, defence industry",skills:["LM5","PS3","CM3","CM4","CA5"]}
+];
+
+
+
+/* ====================== I18N ====================== */
+const I18N={
+ en:{
+  landingTitle:"SKILLS FORGE",strap:"Intelligent Skills and Competencies Mapping Toolkit",
+  landingDesc:"Translate experience and qualifications into evidence-based portable skill statements.",
+  individual:"INDIVIDUAL",enterprise:"ENTERPRISE",
+  entTitle:"Enterprise",entBody:"The structured Enterprise console — course, award and role mapping for institutions — is the main SkillsForge app, at the home page.",
+  tHome:"Skills Hub",tBackground:"Background",tLevel:"Seniority",tSkills:"Your skills",tTarget:"Audience",tResult:"Your transition",
+  qBackground:"Where's your experience from?",qBackgroundLead:"Tap every area that applies.",
+  roleLabel:"Current or last job title",optional:"optional",rolePh:"e.g. Principal Warfare Officer",
+  qLevel:"How senior are you?",qLevelLead:"Where you operate day to day.",
+  qSkills:"Your skills",qSkillsLead:"selected — dashed bubbles are suggestions from your background.",
+  ftLabel:"Describe what you do, or paste your CV",ftHint:"I'll map it to the skills",ftPh:"Paste any text — a role description, responsibilities, your CV. Messy is fine.",
+  mapBtn:"Map my text to skills",
+  qTarget:"Who is this for?",qTargetLead:"Your skills will be rephrased for this audience.",
+  intoLabel:"Translate my skills into",
+  mgmtL:"Management / Corporate",mgmtD:"Civilian, commercial and leadership language.",
+  acadL:"Academic / Learning",acadD:"Learning-outcome phrasing for education and training.",
+  domainLabel:"Point my skills at a domain",allDomains:"All domains",
+  begin:"Begin",back:"Back",cont:"Continue",seeResults:"See my results",adjust:"Adjust",exportBtn:"Export",
+  addSkills:"Add skills",changeAud:"Change audience",restart:"Start again",
+  resultLead1:"competencies, translated for a",resultLead2:"audience at",resultLead3:"level.",
+  audMgmt:"management / corporate",audAcad:"academic / learning",
+  matrixBadge:"Competency transition matrix",colComp:"Your competency",colEquivM:"Civilian equivalent",colEquivA:"Learning-outcome equivalent",colCtx:"Application & context",
+  alignBadge:"Programme & domain alignment",rolesBadge:"Suggested roles",rolesLead:"Where your skill set gives a direct, demonstrable advantage.",drawsOn:"Draws on:",
+  nextBadge:"What the assistant would ask next",
+  disclaimer:"Prototype output. Skills come from the SkillsForge seed set (structured to Maharat Al Emarat); alignment is a transparent weighted match against each programme's profile. With the full national skill set connected, coverage improves substantially. This is evidence to build on, not a guarantee of suitability.",
+  aBackground:"Tap every area your experience comes from — I'll use these to pre-select likely skills.",
+  aLevel:"Set the dial to where you operate. This is the mastery level your statements are written to.",
+  aSkills:"Dashed bubbles are my suggestions — tap to change any. Or paste text on the right and I'll map it for you.",
+  aTarget:"Choose the audience and, if you like, a domain to align against.",
+  levelInfoT:"The five mastery levels",skillsInfoT:"Why are some bubbles dashed?",
+  skillsInfoB:"Dashed bubbles are the assistant's suggestions based on the background you selected. They only count when ticked — you stay in control of your own skill claim.",
+  setTitle:"Settings",setTheme:"Appearance",setThemeD:"Light or dark interface.",setLangL:"Language",setLangD:"English / Arabic. Ribbon controls keep their positions.",
+  setKeys:"API keys & PIN",setKeysD:"Managed server-side in the full build — never stored in this browser.",
+  setReset:"Clear & restart",setResetD:"Removes selections in this session.",
+  themeLight:"Light",themeDark:"Dark",clearBtn:"Clear",
+  seniorityNote:"Indicative level",
+  mappedNone:"No seed skills matched — tap them on the left; the full skill set will catch more.",
+  mappedAlready:"matched — all were already selected.",mappedAdded:"added from your text",mappedLive:"live match",mappedOffline:"offline match",escoAlso:"Also recognised (European skills framework, ESCO)",entOpen:"Open the Enterprise console",
+  selectedWord:"selected"
+ },
+ ar:{
+  landingTitle:"SKILLS FORGE",strap:"مجموعة أدوات ذكية لرسم خرائط المهارات والكفاءات",
+  landingDesc:"حوِّل خبراتك ومؤهلاتك إلى عبارات مهارية قابلة للنقل ومبنية على الأدلة.",
+  individual:"أفراد",enterprise:"مؤسسات",
+  entTitle:"المؤسسات",entBody:"وحدة المؤسسات المنظّمة — لرسم خرائط المقررات والمؤهلات والأدوار — هي التطبيق الرئيسي في الصفحة الرئيسية.",
+  tHome:"مركز المهارات",tBackground:"الخلفية",tLevel:"الأقدمية",tSkills:"مهاراتك",tTarget:"الجمهور",tResult:"نتيجتك",
+  qBackground:"من أين اكتسبت خبرتك؟",qBackgroundLead:"اختر كل مجال ينطبق عليك.",
+  roleLabel:"المسمى الوظيفي الحالي أو الأخير",optional:"اختياري",rolePh:"مثال: ضابط حرب رئيسي",
+  qLevel:"ما مستوى أقدميتك؟",qLevelLead:"المستوى الذي تعمل به يومياً.",
+  qSkills:"مهاراتك",qSkillsLead:"محددة — الفقاعات المتقطعة اقتراحات بناءً على خلفيتك.",
+  ftLabel:"صف ما تقوم به، أو الصق سيرتك الذاتية",ftHint:"سأربط النص بالمهارات",ftPh:"الصق أي نص — وصف دور، مسؤوليات، سيرة ذاتية. لا يهم التنسيق.",
+  mapBtn:"اربط نصي بالمهارات",
+  qTarget:"لمن تُترجم مهاراتك؟",qTargetLead:"ستُعاد صياغة مهاراتك بلغة هذا الجمهور.",
+  intoLabel:"ترجم مهاراتي إلى",
+  mgmtL:"إداري / مؤسسي",mgmtD:"لغة مدنية وتجارية وقيادية.",
+  acadL:"أكاديمي / تعليمي",acadD:"صياغة مخرجات تعلم للتعليم والتدريب.",
+  domainLabel:"وجّه مهاراتي نحو مجال",allDomains:"جميع المجالات",
+  begin:"ابدأ",back:"رجوع",cont:"متابعة",seeResults:"اعرض نتائجي",adjust:"تعديل",exportBtn:"تصدير",
+  addSkills:"إضافة مهارات",changeAud:"تغيير الجمهور",restart:"البدء من جديد",
+  resultLead1:"كفاءة، مترجمة لجمهور",resultLead2:"بمستوى",resultLead3:".",
+  audMgmt:"إداري / مؤسسي",audAcad:"أكاديمي / تعليمي",
+  matrixBadge:"مصفوفة تحويل الكفاءات",colComp:"كفاءتك",colEquivM:"المكافئ المدني",colEquivA:"مكافئ مخرجات التعلم",colCtx:"التطبيق والسياق",
+  alignBadge:"المواءمة مع البرامج والمجالات",rolesBadge:"أدوار مقترحة",rolesLead:"حيث تمنحك مهاراتك ميزة مباشرة وقابلة للإثبات.",drawsOn:"تعتمد على:",
+  nextBadge:"ما قد يسأله المساعد بعد ذلك",
+  disclaimer:"مخرجات نموذج أولي. المهارات من مجموعة SkillsForge الأولية (مبنية على مهارات الإمارات)؛ والمواءمة مطابقة موزونة وشفافة مع ملف كل برنامج. مع ربط مجموعة المهارات الوطنية الكاملة تتحسن التغطية بشكل كبير. هذه أدلة للبناء عليها، لا ضمان للملاءمة.",
+  aBackground:"اختر كل مجالات خبرتك — سأستخدمها لاقتراح مهاراتك المرجّحة.",
+  aLevel:"اضبط القرص على مستواك — به تُصاغ عباراتك المهارية.",
+  aSkills:"الفقاعات المتقطعة اقتراحاتي — عدّلها كما تشاء، أو الصق نصاً وسأربطه لك.",
+  aTarget:"اختر الجمهور، ومجالاً للمواءمة إن رغبت.",
+  levelInfoT:"مستويات الإتقان الخمسة",skillsInfoT:"لماذا بعض الفقاعات متقطعة؟",
+  skillsInfoB:"الفقاعات المتقطعة اقتراحات المساعد بناءً على خلفيتك، ولا تُحتسب إلا إذا حددتها — أنت من يقرر مهاراتك.",
+  setTitle:"الإعدادات",setTheme:"المظهر",setThemeD:"واجهة فاتحة أو داكنة.",setLangL:"اللغة",setLangD:"إنجليزي / عربي. تحافظ أدوات الشريط على مواضعها.",
+  setKeys:"مفاتيح API والرمز السري",setKeysD:"تُدار على الخادم في النسخة الكاملة — لا تُحفظ في هذا المتصفح أبداً.",
+  setReset:"مسح وإعادة البدء",setResetD:"يزيل اختيارات هذه الجلسة.",
+  themeLight:"فاتح",themeDark:"داكن",clearBtn:"مسح",
+  seniorityNote:"المستوى الإرشادي",
+  mappedNone:"لا مطابقات في المجموعة الأولية — حدد المهارات يساراً؛ المجموعة الكاملة ستلتقط المزيد.",
+  mappedAlready:"مطابقة — وكلها محددة مسبقاً.",mappedAdded:"أُضيفت من نصك",mappedLive:"مطابقة مباشرة",mappedOffline:"مطابقة دون اتصال",escoAlso:"معترف بها أيضاً (الإطار الأوروبي للمهارات ESCO)",entOpen:"افتح وحدة المؤسسات",
+  selectedWord:"محددة"
+ }
+};
+const MASTERY_AR=[{n:"الوعي",d:"يدرك المفهوم ولغته وصلته بالدور."},{n:"التأسيس",d:"يطبّق بتوجيه في مواقف روتينية منظمة."},{n:"الإتقان",d:"يطبّق باستقلالية في مواقف متنوعة وأقل قابلية للتنبؤ."},{n:"متقدم",d:"يقود الممارسة ويكاملها عبر الوظائف ويقيّم النتائج."},{n:"خبير",d:"يصوغ العقيدة والسياسة ويبتكر ويقدّم المشورة استراتيجياً."}];
+let lang="en";
+function t(k){ return (I18N[lang]&&I18N[lang][k])||I18N.en[k]||k; }
+function mName(l){ return lang==="ar"?MASTERY_AR[l-1].n:MASTERY[l-1].name; }
+function mDesc(l){ return lang==="ar"?MASTERY_AR[l-1].d:MASTERY[l-1].desc; }
+
+/* ====================== STATE / NAV ====================== */
+const SB_URL="https://mvadvbymgvmdqxonbmjp.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12YWR2YnltZ3ZtZHF4b25ibWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5ODgxNDQsImV4cCI6MjEwMzU2NDE0NH0.6cOrI_C9lHkS9Ab2wpizyGvai95f2F4ZC6_QPK8jDYs"; /* public anon key by design */
+const state={ step:"landing", backgrounds:[], roleText:"", level:3, skills:{}, freetext:"", seeded:false, target:"mgmt", domain:"all", mappedNote:"", escoHits:[], liveMatch:false };
+const FLOW=["landing","background","level","skills","target","result"];
+function selectedIds(){ return Object.keys(state.skills).filter(id=>state.skills[id]); }
+function seedFromBackground(){ const s={}; for(const b of state.backgrounds){ const bg=BACKGROUNDS.find(x=>x.id===b); if(bg) bg.skills.forEach(id=>s[id]=true);} return s; }
+function stepValid(){ if(state.step==="background")return state.backgrounds.length>0; if(state.step==="skills")return selectedIds().length>0; return true; }
+function navNext(){ const i=FLOW.indexOf(state.step); if(i<FLOW.length-1 && stepValid()) go(FLOW[i+1]); }
+function navBack(){ const i=FLOW.indexOf(state.step); if(i>0) go(FLOW[i-1]); }
+function go(step){ state.step=step; render(); }
+function restartAll(){ Object.assign(state,{step:"landing",backgrounds:[],roleText:"",level:3,skills:{},freetext:"",seeded:false,target:"mgmt",domain:"all",mappedNote:"",escoHits:[],liveMatch:false}); closeModal(); render(); }
+
+function setLang(l){ lang=l; document.documentElement.lang=l; document.documentElement.dir=(l==="ar"?"rtl":"ltr");
+  document.getElementById("langEN").classList.toggle("on",l==="en");
+  document.getElementById("langAR").classList.toggle("on",l==="ar"); render(); }
+function toggleTheme(){ const h=document.documentElement; h.setAttribute("data-theme",h.getAttribute("data-theme")==="dark"?"light":"dark"); }
+
+/* ====================== RIBBON ====================== */
+const TITLES={landing:"tHome",background:"tBackground",level:"tLevel",skills:"tSkills",target:"tTarget",result:"tResult"};
+function refreshRibbon(){
+  document.getElementById("rtTitle").textContent=t(TITLES[state.step]);
+  const i=FLOW.indexOf(state.step);
+  document.getElementById("rtSub").textContent=(i>0&&i<FLOW.length-1)?("0"+i+" / 0"+(FLOW.length-2)):"";
+  document.getElementById("navBack").disabled=(i===0);
+  document.getElementById("navNext").disabled=(i===FLOW.length-1)||!stepValid();
+  document.getElementById("rbMode").textContent=state.liveMatch?(lang==="ar"?"هجين · مطابقة مباشرة":"HYBRID · LIVE MATCH"):(lang==="ar"?"حتمي · مجموعة أولية":"DETERMINISTIC · SEED SET");
+}
+
+/* ====================== RENDER ====================== */
+const app=()=>document.getElementById("app");
+function render(){ app().innerHTML=({landing:vLanding,background:vBackground,level:vLevel,skills:vSkills,target:vTarget,result:vResult}[state.step])(); refreshRibbon(); const sb=app().querySelector(".stage-body"); if(sb)sb.scrollTop=0; }
+
+function head(qKey,leadKey,assistKey,extra){
+  return '<div class="stage-head"><div><h1>'+t(qKey)+(extra||"")+'</h1><p class="lead">'+t(leadKey)+'</p></div>'+
+    '<div class="assist"><span class="assist-orb">SF</span><p>'+t(assistKey)+'</p></div></div>';
+}
+function actions(backTo,nextTo,nextKey,enabled){
+  return '<div class="stage-actions">'+
+    (backTo?'<button class="btn ghost" onclick="go(\''+backTo+'\')">'+t("back")+'</button>':'<span></span>')+
+    (nextTo?'<button class="btn primary" '+(enabled?'':'disabled')+' onclick="'+(enabled?'go(\''+nextTo+'\')':'')+'">'+t(nextKey)+'</button>':'<span></span>')+'</div>';
+}
+
+/* ---- Landing: mode wheel ---- */
+function vLanding(){
+  return '<div class="landing">'+
+    '<div class="landing-copy flip-rtl"><h1>'+t("landingTitle")+'</h1><div class="strap">'+t("strap")+'</div><p>'+t("landingDesc")+'</p></div>'+
+    '<div class="mode-wheel-wrap">'+modeWheelSvg()+'</div>'+
+  '</div>';
+}
+function modeWheelSvg(){
+  // Chronometer-style selector: two arc segments around the roundel hub.
+  const seg=(id,d,tx,ty,label,dim)=>'<g class="mw-seg'+(dim?' dim':'')+'" onclick="'+(id==="ind"?'go(\'background\')':'openModal(\'enterprise\')')+'">'+
+    '<path d="'+d+'"/><text x="'+tx+'" y="'+ty+'" text-anchor="middle">'+label+'</text></g>';
+  let ticks=''; for(let a=0;a<360;a+=15){ const r1=182,r2=(a%45===0?172:177); const x1=200+r1*Math.cos(a*Math.PI/180),y1=200+r1*Math.sin(a*Math.PI/180); const x2=200+r2*Math.cos(a*Math.PI/180),y2=200+r2*Math.sin(a*Math.PI/180); ticks+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>'; }
+  return '<svg class="mode-wheel" viewBox="0 0 400 400" dir="ltr">'+
+    '<circle class="mw-ring" cx="200" cy="200" r="186"/>'+
+    '<circle class="mw-ring2" cx="200" cy="200" r="152"/>'+
+    '<g class="mw-ticks">'+ticks+'</g>'+
+    seg("ind","M200,58 A142,142 0 0 1 200,342 L200,290 A90,90 0 0 0 200,110 Z",274,205,t("individual"),false)+
+    seg("ent","M200,342 A142,142 0 0 1 200,58 L200,110 A90,90 0 0 0 200,290 Z",126,205,t("enterprise"),true)+
+    '<image class="mw-centre-mark" href="'+(window.ROUNDEL||'')+'" x="130" y="130" width="140" height="140"/>'+
+  '</svg>';
+}
+
+/* ---- Background ---- */
+function vBackground(){
+  const chips=BACKGROUNDS.map(b=>{ const on=state.backgrounds.includes(b.id);
+    return '<button class="chip'+(on?' on':'')+'" onclick="toggleBg(\''+b.id+'\')"><span class="tick">✓</span><strong>'+esc(b.label)+'</strong><small>'+esc(b.hint)+'</small></button>'; }).join("");
+  return head("qBackground","qBackgroundLead","aBackground")+
+    '<div class="stage-body flip-rtl"><div class="chips">'+chips+'</div>'+
+    '<div style="max-width:460px;margin-top:14px"><label class="fl">'+t("roleLabel")+' <span class="optional">('+t("optional")+')</span></label>'+
+    '<input class="text" placeholder="'+t("rolePh")+'" value="'+esc(state.roleText)+'" oninput="state.roleText=this.value"></div></div>'+
+    actions("landing","level","cont",state.backgrounds.length>0);
+}
+function toggleBg(id){ const i=state.backgrounds.indexOf(id); if(i>=0)state.backgrounds.splice(i,1); else state.backgrounds.push(id); state.seeded=false; render(); }
+
+/* ---- Level: chronometer dial ---- */
+function vLevel(){
+  return head("qLevel","qLevelLead","aLevel",'<button class="info-dot" onclick="openModal(\'levels\')" aria-label="Info">i</button>')+
+    '<div class="stage-body"><div class="dial-stage">'+
+      '<div class="dial-wrap">'+dialSvg()+'</div>'+
+      '<div class="dial-read flip-rtl"><span class="qfe" id="dQfe">'+MASTERY[state.level-1].qfe+'</span><strong id="dName">'+mName(state.level)+'</strong><p id="dDesc">'+mDesc(state.level)+'</p></div>'+
+    '</div></div>'+
+    actions("background","skills","cont",true);
+}
+function dialSvg(){
+  // 5-stop chronometer gauge: 240-degree sweep from 150deg to 30deg (clockwise through top).
+  const C=190,R=132,STOP_R=158;
+  const angs=[150,210,270,330,30]; // degrees, level 1..5
+  const pt=(a,r)=>({x:C+r*Math.cos(a*Math.PI/180),y:C+r*Math.sin(a*Math.PI/180)});
+  let minor=""; for(let k=0;k<=48;k++){ const a=150+k*5; const isMaj=(k%12===0);
+    const p1=pt(a,R+10),p2=pt(a,R+(isMaj?22:16));
+    minor+='<line class="'+(isMaj?'tick-maj':'tick-min')+'" x1="'+p1.x.toFixed(1)+'" y1="'+p1.y.toFixed(1)+'" x2="'+p2.x.toFixed(1)+'" y2="'+p2.y.toFixed(1)+'"/>'; }
+  let stops=""; angs.forEach((a,i)=>{ const p=pt(a,STOP_R); const on=(state.level===i+1);
+    stops+='<g class="stop'+(on?' on':'')+'" onclick="setLevel('+(i+1)+')"><circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="15"/><text x="'+p.x.toFixed(1)+'" y="'+(p.y+4).toFixed(1)+'" text-anchor="middle">'+(i+1)+'</text></g>'; });
+  const needleAng=angs[state.level-1];
+  const arcLen=2*Math.PI*R*(240/360);
+  const frac=(state.level-1)/4;
+  const a0=pt(150,R), a1=pt(30,R);
+  return '<svg class="dial" viewBox="0 0 380 380" dir="ltr">'+
+    '<circle class="face" cx="190" cy="190" r="176"/>'+
+    '<circle class="ring" cx="190" cy="190" r="168"/>'+
+    '<circle class="ring2" cx="190" cy="190" r="108"/>'+
+    minor+
+    '<path class="arc-fill" d="M'+a0.x.toFixed(1)+','+a0.y.toFixed(1)+' A'+R+','+R+' 0 1 1 '+a1.x.toFixed(1)+','+a1.y.toFixed(1)+'" stroke-dasharray="'+arcLen.toFixed(1)+'" stroke-dashoffset="'+(arcLen*(1-frac)).toFixed(1)+'"/>'+
+    stops+
+    '<g class="needle-g" style="transform-origin:190px 190px;transform:rotate('+needleAng+'deg)"><line class="needle" x1="190" y1="190" x2="'+(190+R-26)+'" y2="190"/></g>'+
+    '<circle class="needle-hub" cx="190" cy="190" r="7"/>'+
+  '</svg>';
+}
+function setLevel(l){ state.level=l; render(); }
+
+/* ---- Skills: bubbles + assistant mapper ---- */
+function vSkills(){
+  if(!state.seeded){ state.skills=seedFromBackground(); state.seeded=true; }
+  let fams="";
+  for(const [fid,f] of Object.entries(FAMILIES)){
+    const list=TAXONOMY.filter(s=>s.family===fid);
+    const bubbles=list.map(s=>{ const on=!!state.skills[s.id];
+      const sugg=state.backgrounds.some(b=>{const bg=BACKGROUNDS.find(x=>x.id===b);return bg&&bg.skills.includes(s.id);});
+      return '<button class="bubble'+(on?' on':'')+(sugg?' sugg':'')+'" onclick="toggleSkill(\''+s.id+'\')"><span class="dot"></span>'+esc(s.name)+'</button>'; }).join("");
+    fams+='<div class="fam"><div class="fam-name">'+esc(f.name)+'</div><div class="bubbles">'+bubbles+'</div></div>';
+  }
+  const count=selectedIds().length;
+  return head("qSkills","aSkills","aSkills",'<button class="info-dot" onclick="openModal(\'sugg\')" aria-label="Info">i</button>')
+    .replace('<p class="lead">'+t("aSkills")+'</p>','<p class="lead"><b>'+count+'</b> '+t("qSkillsLead")+'</p>')+
+    '<div class="stage-body"><div class="two-col">'+
+      '<div class="col-scroll flip-rtl">'+fams+'</div>'+
+      '<div class="flip-rtl"><div class="side-card"><label class="fl">'+t("ftLabel")+' <span class="optional">('+t("optional")+' — '+t("ftHint")+')</span></label>'+
+      '<textarea rows="7" placeholder="'+t("ftPh")+'" oninput="state.freetext=this.value">'+esc(state.freetext)+'</textarea>'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap"><button class="btn gold" onclick="mapFreetext()">'+t("mapBtn")+'</button>'+
+      '<span style="font-size:11.5px;color:var(--brand-bright);font-weight:600">'+esc(state.mappedNote)+'</span></div>'+
+      (state.escoHits&&state.escoHits.length? '<div style="margin-top:12px"><label class="fl">'+t("escoAlso")+'</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">'+state.escoHits.map(function(m){return '<span style="font-size:11px;padding:4px 10px;border:1px solid var(--line);border-radius:20px;color:var(--muted)">'+esc(m.name_en)+' <b style="color:var(--brand-bright)">'+Math.round(m.similarity*100)+'%</b></span>';}).join("")+'</div></div>':"")+'</div></div>'+
+    '</div></div>'+
+    actions("level","target","cont",count>0);
+}
+function toggleSkill(id){ state.skills[id]=!state.skills[id]; render(); }
+async function mapFreetext(){
+  const text=(state.freetext+" "+state.roleText).trim();
+  if(!text){ state.mappedNote=t("mappedNone"); render(); return; }
+  state.mappedNote="\u2026"; render();
+  try{
+    const r=await fetch(SB_URL+"/functions/v1/match",{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+SB_KEY,"apikey":SB_KEY},
+      body:JSON.stringify({text:text,count:14,min_similarity:0.74})});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json(); const matches=d.matches||[];
+    let tax=0, added=0;
+    for(const m of matches){ if(m.similarity>=0.78 && TAXONOMY.some(s=>s.id===m.id)){ tax++; if(!state.skills[m.id]){ state.skills[m.id]=true; added++; } } }
+    state.escoHits=matches.filter(m=>String(m.id).indexOf("esco:")===0 && m.similarity>=0.76).slice(0,6);
+    state.liveMatch=true;
+    state.mappedNote=(tax? (added? added+" "+t("mappedAdded")+" ("+tax+")" : tax+" "+t("mappedAlready")) : t("mappedNone"))+" \u00b7 "+t("mappedLive");
+  }catch(e){
+    const hits=extractSkills(text);
+    let added=0; for(const h of hits){ if(!state.skills[h.id]){ state.skills[h.id]=true; added++; } }
+    state.liveMatch=false; state.escoHits=[];
+    state.mappedNote=(hits.length? (added? added+" "+t("mappedAdded")+" ("+hits.length+")" : hits.length+" "+t("mappedAlready")) : t("mappedNone"))+" \u00b7 "+t("mappedOffline");
+  }
+  if(state.liveMatch){ const rb=document.getElementById("rbMode"); if(rb) rb.textContent=(lang==="ar"?"\u0647\u062c\u064a\u0646 \u00b7 \u0645\u0637\u0627\u0628\u0642\u0629 \u0645\u0628\u0627\u0634\u0631\u0629":"HYBRID \u00b7 LIVE MATCH"); }
+  render();
+}
+
+/* ---- Target ---- */
+function vTarget(){
+  const tgt=(v,l,d)=>'<button class="chip'+(state.target===v?' on':'')+'" onclick="state.target=\''+v+'\';render()"><span class="tick">✓</span><strong>'+l+'</strong><small>'+d+'</small></button>';
+  const domOpts=['<option value="all"'+(state.domain==="all"?" selected":"")+'>'+t("allDomains")+'</option>']
+    .concat(PROGRAMMES.map(p=>'<option value="'+p.id+'"'+(state.domain===p.id?" selected":"")+'>'+esc(p.name)+'</option>')).join("");
+  return head("qTarget","qTargetLead","aTarget")+
+    '<div class="stage-body flip-rtl"><label class="fl">'+t("intoLabel")+'</label>'+
+    '<div class="chips" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr));max-width:640px">'+
+      tgt("mgmt",t("mgmtL"),t("mgmtD"))+tgt("acad",t("acadL"),t("acadD"))+
+    '</div>'+
+    '<div style="max-width:400px;margin-top:14px"><label class="fl">'+t("domainLabel")+' <span class="optional">('+t("optional")+')</span></label>'+
+    '<select class="sel" onchange="state.domain=this.value">'+domOpts+'</select></div></div>'+
+    actions("skills","result","seeResults",true);
+}
+
+/* ---- Result ---- */
+function targetText(s){ return state.target==="acad" ? ("Able to "+s.reg.acad+".") : s.reg.mgmt; }
+function vResult(){
+  const ids=selectedIds(); const ordered=TAXONOMY.filter(s=>ids.includes(s.id));
+  const rows=ordered.map(s=>'<tr><td class="comp"><strong>'+esc(s.name)+'</strong><small>'+esc(s.reg.mil)+'</small></td>'+
+    '<td>'+esc(targetText(s))+'</td><td class="ctx">'+esc(s.lo.charAt(0).toUpperCase()+s.lo.slice(1))+'.</td></tr>').join("");
+  let aligns=PROGRAMMES.map(p=>({id:p.id,name:p.name,pct:alignment(ids,p)})).sort((a,b)=>b.pct-a.pct);
+  if(state.domain!=="all"){ const d=aligns.find(a=>a.id===state.domain); aligns=[d].concat(aligns.filter(a=>a.id!==state.domain)); }
+  const alignRows=aligns.map(a=>'<div class="align-row"><span class="nm">'+esc(a.name)+'</span><div class="align-track"><div class="align-fill" style="width:'+a.pct+'%"></div></div><span class="align-pct">'+a.pct+'%</span></div>').join("");
+  const roles=ROLES.map(r=>({r,overlap:r.skills.filter(id=>ids.includes(id))})).filter(x=>x.overlap.length>0)
+    .sort((a,b)=>b.overlap.length-a.overlap.length).slice(0,6);
+  const roleRows=roles.map(x=>'<div class="role"><strong>'+esc(x.r.title)+'</strong><span class="sector">'+esc(x.r.sector)+'</span>'+
+    '<div class="why">'+t("drawsOn")+' '+x.overlap.map(id=>esc(SKILL[id].name)).join(", ")+'.</div></div>').join("");
+  const aud=state.target==="acad"?t("audAcad"):t("audMgmt");
+  return '<div class="stage-head flip-rtl"><div><h1>'+t("tResult")+'</h1>'+
+    '<p class="lead">'+ordered.length+' '+t("resultLead1")+' <b>'+aud+'</b> '+t("resultLead2")+' <b>'+mName(state.level)+'</b>'+t("resultLead3")+'</p></div>'+
+    '<div style="display:flex;gap:8px"><button class="btn" onclick="go(\'target\')">'+t("adjust")+'</button><button class="btn gold" onclick="window.print()">'+t("exportBtn")+'</button></div></div>'+
+    '<div class="stage-body flip-rtl">'+
+    '<div class="card"><div class="brief-badge">'+t("matrixBadge")+'</div>'+
+    '<table class="matrix"><thead><tr><th>'+t("colComp")+'</th><th>'+(state.target==="acad"?t("colEquivA"):t("colEquivM"))+'</th><th>'+t("colCtx")+'</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="card"><div class="brief-badge">'+t("alignBadge")+'</div><div style="margin-top:5px">'+alignRows+'</div></div>'+
+    (roleRows?'<div class="card"><div class="brief-badge">'+t("rolesBadge")+'</div><p class="lead" style="margin:2px 0 6px;font-size:11px">'+t("rolesLead")+'</p>'+roleRows+'</div>':'')+
+    '<p style="font-size:10px;color:var(--muted)">'+t("disclaimer")+'</p>'+
+    '</div>'+
+    '<div class="stage-actions"><button class="btn ghost" onclick="restartAll()">'+t("restart")+'</button>'+
+    '<div style="display:flex;gap:8px"><button class="btn" onclick="go(\'skills\')">'+t("addSkills")+'</button><button class="btn" onclick="go(\'target\')">'+t("changeAud")+'</button></div></div>';
+}
+
+/* ====================== MODALS ====================== */
+function openModal(kind){
+  let html="";
+  if(kind==="enterprise") html='<h3>'+t("entTitle")+'</h3><p>'+t("entBody")+'</p><p style="margin-top:12px"><a class="btn" href="index.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">'+t("entOpen")+'</a></p>';
+  if(kind==="levels") html='<h3>'+t("levelInfoT")+'</h3>'+MASTERY.map((m,i)=>'<p style="margin:7px 0"><b style="color:var(--brand-bright)">'+(i+1)+' · '+mName(i+1)+'</b> <span style="font-size:10px;color:var(--gold)">'+m.qfe+'</span><br>'+mDesc(i+1)+'</p>').join("");
+  if(kind==="sugg") html='<h3>'+t("skillsInfoT")+'</h3><p>'+t("skillsInfoB")+'</p>';
+  if(kind==="settings") html='<h3>'+t("setTitle")+'</h3>'+
+    '<div class="set-row"><div class="set-lbl"><strong>'+t("setTheme")+'</strong><small>'+t("setThemeD")+'</small></div><button class="btn" onclick="toggleTheme()">'+t("themeLight")+' / '+t("themeDark")+'</button></div>'+
+    '<div class="set-row"><div class="set-lbl"><strong>'+t("setLangL")+'</strong><small>'+t("setLangD")+'</small></div><div class="lang-toggle"><button class="'+(lang==="en"?"on":"")+'" onclick="setLang(\'en\');openModal(\'settings\')">EN</button><button class="'+(lang==="ar"?"on":"")+'" onclick="setLang(\'ar\');openModal(\'settings\')">AR</button></div></div>'+
+    '<div class="set-row"><div class="set-lbl"><strong>'+t("setKeys")+'</strong><small>'+t("setKeysD")+'</small></div></div>'+
+    '<div class="set-row"><div class="set-lbl"><strong>'+t("setReset")+'</strong><small>'+t("setResetD")+'</small></div><button class="btn" onclick="restartAll()">'+t("clearBtn")+'</button></div>';
+  document.getElementById("modalHost").innerHTML='<div class="modal-back" onclick="if(event.target===this)closeModal()"><div class="modal flip-rtl">'+
+    '<button class="close-x" onclick="closeModal()" aria-label="Close">×</button>'+html+'</div></div>';
+}
+function closeModal(){ document.getElementById("modalHost").innerHTML=""; }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+
+document.getElementById("brandMark").src=(window.ROUNDEL||"");
+render();
+</script>
+</body>
+</html>
