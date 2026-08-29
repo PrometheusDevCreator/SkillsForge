@@ -77,6 +77,10 @@
     .landing-brand:before{width:680px;height:680px}
     .landing-brand:after{width:820px;height:820px;border-color:rgba(255,255,255,.09)}
     .landing-brand>*{position:relative;z-index:1}
+    .mode-choice{display:flex;gap:10px}
+    .mode-choice .login-submit{flex:1;line-height:1.25;padding-top:11px;padding-bottom:11px}
+    .mode-choice .login-submit small{display:block;font-weight:500;font-size:10.5px;opacity:.85;margin-top:4px;letter-spacing:.01em;text-transform:none}
+    @media(max-width:560px){.mode-choice{flex-direction:column}}
     .hero-mark{width:min(41vw,390px);height:min(41vw,390px);min-width:290px;min-height:290px;margin-bottom:32px;box-shadow:0 25px 65px rgba(0,0,0,.28)}
     .landing-brand h1{margin:0;font:800 clamp(38px,5vw,66px)/.95 var(--display);letter-spacing:.13em}
     .landing-brand p{margin:15px 0 0;color:#cfe0d6;letter-spacing:.06em;font-size:14px}
@@ -458,10 +462,13 @@
       <form class="login-panel" id="entryForm">
         <div class="eyebrow">Prometheus Education Systems</div>
         <h2>Welcome back.</h2>
-        <p>Enter your skills analysis workspace.</p>
+        <p>Enter your name, then choose your pathway.</p>
         <div class="login-stack">
-          <div class="field"><label for="entryName">User</label><input id="entryName" maxlength="60" autocomplete="off" placeholder="e.g. Matthew"></div>
-          <button class="btn primary login-submit" type="submit">Enter Skills Forge</button>
+          <div class="field"><label for="entryName">Your name</label><input id="entryName" maxlength="60" autocomplete="off" placeholder="e.g. Matthew"></div>
+          <div class="mode-choice">
+            <button class="btn primary login-submit" type="submit">Enterprise<small>Institutional console — courses, awards &amp; roles</small></button>
+            <button class="btn gold login-submit" type="button" id="entryIndividual">Individual<small>Transition pathway — your personal journey</small></button>
+          </div>
         </div>
         <div class="prototype-note"><strong>Local only:</strong> v1 demonstrator. All analysis runs on this machine and nothing leaves it. Deterministic mode works fully offline; AI enrichment activates only when the local engine holds a provider key.</div>
       </form>
@@ -1679,8 +1686,13 @@ Defence organisation seeks an officer to support capability development and mode
     refreshStatusbar(); checkEngine();
     $("#entryForm").onsubmit=e=>{ e.preventDefault();
       state.user=$("#entryName").value.trim()||state.user||"Local user"; save();
+      try{ localStorage.setItem("sf_user", state.user); }catch(err){}
       $("#landingScreen").classList.add("hidden"); $("#appScreen").classList.remove("hidden");
       document.body.classList.add("app-open"); goHub(); };
+    const indBtn=$("#entryIndividual");
+    if(indBtn) indBtn.onclick=()=>{ const n=$("#entryName").value.trim();
+      try{ localStorage.setItem("sf_user", n||"Candidate"); }catch(err){}
+      location.href="individual.html"; };
     if($("#entryName")) $("#entryName").value=state.user||"";
   });
 
