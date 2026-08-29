@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkillsForge — Acceptance</title>
+<style>
+:root{--canvas:#0d1117;--panel:#151b24;--line:#2a3341;--line-strong:#3a4757;--ink:#e8edf4;--muted:#8b98a9;
+--brand:#1f6feb;--brand-bright:#58a6ff;--gold:#c9a227;--gold-bright:#e3c766;--green:#3fb950;--red:#f85149;
+--ribbon-top:linear-gradient(90deg,#0b3d91,#1f6feb);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font:14px/1.55 -apple-system,"Segoe UI",Bahnschrift,Roboto,Helvetica,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.ribbon{background:var(--ribbon-top);color:#fff;font-size:11.5px;letter-spacing:.14em;font-weight:700;padding:7px 18px;display:flex;justify-content:space-between;align-items:center}
+.ribbon .r{display:flex;gap:10px;align-items:center;font-weight:600;letter-spacing:.08em}
+main{flex:1;max-width:980px;width:100%;margin:0 auto;padding:26px 18px 60px}
+h1{font-size:21px;letter-spacing:.02em;margin-bottom:4px}
+.sub{color:var(--muted);font-size:12.5px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:18px}
+.card h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:12px}
+.row{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:none}
+.pill{flex:0 0 64px;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.08em;border-radius:20px;padding:4px 0;margin-top:1px}
+.wait{background:#2a3341;color:var(--muted)}
+.pass{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.4)}
+.fail{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.4)}
+.row .body{flex:1}
+.row .name{font-weight:650;font-size:13.5px}
+.row .det{color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:2px;word-break:break-word}
+button.rerun{background:transparent;border:1px solid var(--gold);color:var(--gold-bright);border-radius:8px;padding:7px 16px;font-weight:700;font-size:12px;letter-spacing:.06em;cursor:pointer}
+button.rerun:hover{background:rgba(201,162,39,.12)}
+.chk{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer;user-select:none}
+.chk:first-of-type{border-top:none}
+.box{flex:0 0 20px;height:20px;border:2px solid var(--line-strong);border-radius:6px;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#0d1117;font-weight:900}
+.chk.on .box{background:var(--green);border-color:var(--green)}
+.chk .name{font-weight:600;font-size:13.5px}
+.chk.on .name{color:var(--green)}
+.chk .det{color:var(--muted);font-size:12px;margin-top:1px}
+.prog{font-size:12px;color:var(--muted);margin-bottom:10px}
+.prog b{color:var(--gold-bright)}
+a{color:var(--brand-bright)}
+.foot{background:#0a0e14;border-top:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:.1em;padding:6px 18px;display:flex;justify-content:space-between}
+img.mark{height:22px;width:22px;object-fit:contain}
+</style>
+</head>
+<body>
+<div class="ribbon"><span style="display:flex;gap:10px;align-items:center"><img class="mark" id="brandMark" alt="" style="display:none">PROMETHEUS · SKILLSFORGE</span><span class="r">ACCEPTANCE RUNNER</span></div>
+<main>
+  <h1>Acceptance test runner</h1>
+  <div class="sub">Automated backend checks run against the live SkillsForge services, plus the manual walkthrough for the wizard itself. App under test: <a href="index.html">index.html</a> · legacy: <a href="classic.html">classic.html</a></div>
+
+  <div class="card">
+    <h2>Automated checks</h2>
+    <div id="auto"></div>
+    <div style="margin-top:14px"><button class="rerun" onclick="runAll()">Re-run checks</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Manual walkthrough — tick as you verify</h2>
+    <div class="prog" id="prog"></div>
+    <div id="manual"></div>
+  </div>
+</main>
+<div class="foot"><span>SKILLSFORGE ACCEPTANCE v1</span><span id="ts"></span></div>
+<script src="assets/roundel.js"></script>
+<script>
+"use strict";
+const SB_URL="https://mvadvbymgvmdqxonbmjp.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12YWR2YnltZ3ZtZHF4b25ibWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5ODgxNDQsImV4cCI6MjEwMzU2NDE0NH0.6cOrI_C9lHkS9Ab2wpizyGvai95f2F4ZC6_QPK8jDYs";
+const H={"Content-Type":"application/json","Authorization":"Bearer "+SB_KEY,"apikey":SB_KEY};
+try{ if(window.ROUNDEL){ const m=document.getElementById("brandMark"); m.src=window.ROUNDEL; m.style.display="inline-block"; } }catch(e){}
+document.getElementById("ts").textContent=new Date().toISOString().slice(0,16).replace("T"," ")+" UTC";
+
+const CHECKS=[
+ {id:"rest", name:"Database REST reachable", run:async()=>{
+   const r=await fetch(SB_URL+"/rest/v1/framework?select=id&limit=1",{headers:H});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   return "reachable, framework table readable";
+ }},
+ {id:"counts", name:"Skill corpus loaded (PES + ESCO)", run:async()=>{
+   async function count(q){ const r=await fetch(SB_URL+"/rest/v1/skill?select=id"+q,{method:"HEAD",headers:{...H,"Prefer":"count=exact"}});
+     if(!r.ok) throw new Error("HTTP "+r.status);
+     return parseInt((r.headers.get("content-range")||"/0").split("/")[1]); }
+   const total=await count(""), esco=await count("&framework_id=eq.esco"), emb=await count("&embedding=not.is.null");
+   if(esco<10000) throw new Error("ESCO thin: "+esco+" rows (expect 13,000+)");
+   if(emb<total-50) throw new Error("unembedded rows: "+(total-emb));
+   return total.toLocaleString()+" skills ("+esco.toLocaleString()+" ESCO), "+emb.toLocaleString()+" embedded";
+ }},
+ {id:"embed", name:"Embedding service (gte-small, 384-dim)", run:async()=>{
+   const t0=performance.now();
+   const r=await fetch(SB_URL+"/functions/v1/embed",{method:"POST",headers:H,body:JSON.stringify({texts:["incident command"]})});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   const d=await r.json();
+   if(!d.embeddings||d.embeddings[0].length!==384) throw new Error("bad vector shape");
+   return "384-dim vector in "+Math.round(performance.now()-t0)+" ms";
+ }},
+ {id:"match", name:"Semantic match — crisis operations query", run:async()=>{
+   const t0=performance.now();
+   const r=await fetch(SB_URL+"/functions/v1/match",{method:"POST",headers:H,
+     body:JSON.stringify({text:"ran the operations room during a flood response",count:5,min_similarity:0.5})});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   const d=await r.json(); const m=d.matches||[];
+   if(!m.length||m[0].similarity<0.75) throw new Error("weak matches: "+JSON.stringify(m.slice(0,2)));
+   return Math.round(performance.now()-t0)+" ms — top: "+m.slice(0,3).map(x=>x.name_en+" ("+Math.round(x.similarity*100)+"%)").join(" · ");
+ }},
+ {id:"sem", name:"Semantic sanity — training text finds L&D skills", run:async()=>{
+   const r=await fetch(SB_URL+"/functions/v1/match",{method:"POST",headers:H,
+     body:JSON.stringify({text:"planned lessons, delivered classroom instruction and assessed trainee performance",count:8,min_similarity:0.5})});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   const d=await r.json(); const m=d.matches||[];
+   const hit=m.find(x=>/^L|^esco/.test(String(x.id)) && /teach|instruct|assess|learn|train|educat|curricul/i.test(x.name_en));
+   if(!hit) throw new Error("no L&D-flavoured hit in top 8: "+m.slice(0,3).map(x=>x.name_en).join("; "));
+   return "found: "+hit.name_en+" ("+Math.round(hit.similarity*100)+"%)";
+ }},
+ {id:"esco", name:"ESCO breadth — niche skill resolvable", run:async()=>{
+   const r=await fetch(SB_URL+"/functions/v1/match",{method:"POST",headers:H,
+     body:JSON.stringify({text:"operated the ship anchor windlass and mooring equipment",count:5,min_similarity:0.5})});
+   if(!r.ok) throw new Error("HTTP "+r.status);
+   const d=await r.json(); const m=(d.matches||[]).filter(x=>String(x.id).indexOf("esco:")===0);
+   if(!m.length) throw new Error("no ESCO rows matched");
+   return m[0].name_en+" ("+Math.round(m[0].similarity*100)+"%)";
+ }},
+];
+
+async function runAll(){
+  const host=document.getElementById("auto");
+  host.innerHTML=CHECKS.map(c=>'<div class="row" id="r-'+c.id+'"><span class="pill wait">WAIT</span><div class="body"><div class="name">'+c.name+'</div><div class="det">running…</div></div></div>').join("");
+  for(const c of CHECKS){
+    const row=document.getElementById("r-"+c.id), pill=row.querySelector(".pill"), det=row.querySelector(".det");
+    try{ const msg=await c.run(); pill.className="pill pass"; pill.textContent="PASS"; det.textContent=msg; }
+    catch(e){ pill.className="pill fail"; pill.textContent="FAIL"; det.textContent=String(e.message||e); }
+  }
+}
+
+const MANUAL=[
+ ["Landing renders","Roundel, both ribbons, EN/AR toggle visible; no broken images"],
+ ["Mode wheel","Wheel turns between Individual / Enterprise / About; hub roundel intact"],
+ ["Background chips","Selecting service background seeds sensible suggested skills"],
+ ["Seniority dial","Dial moves 1–5 and the level label updates"],
+ ["Skill bubbles","Bubbles toggle on/off; running count updates"],
+ ["Freetext live mapping","Paste role text, Map — note says live match; relevant bubbles auto-select"],
+ ["ESCO recognition chips","After mapping rich text, 'Also recognised (ESCO)' chips appear with percentages"],
+ ["Offline fallback","(Optional) With network blocked, mapping still works marked offline"],
+ ["Arabic toggle","AR flips content RTL with Arabic strings; top/bottom ribbons stay locked EN"],
+ ["Target & result","Target step works; result shows matrix, alignment %, suggested roles"],
+ ["Print / export","Print view is clean (dark chrome dropped, content legible)"],
+ ["Classic app link","Enterprise modal links to the structured app (classic.html) and it loads"],
+];
+const LSKEY="sf_accept_v1";
+let ticks={}; try{ ticks=JSON.parse(localStorage.getItem(LSKEY)||"{}"); }catch(e){}
+function renderManual(){
+  document.getElementById("manual").innerHTML=MANUAL.map((m,i)=>
+    '<div class="chk'+(ticks[i]?" on":"")+'" onclick="tick('+i+')"><div class="box">'+(ticks[i]?"✓":"")+'</div><div><div class="name">'+m[0]+'</div><div class="det">'+m[1]+'</div></div></div>').join("");
+  const n=MANUAL.filter((_,i)=>ticks[i]).length;
+  document.getElementById("prog").innerHTML="<b>"+n+" / "+MANUAL.length+"</b> verified"+(n===MANUAL.length?" — acceptance complete.":"");
+}
+function tick(i){ ticks[i]=!ticks[i]; try{ localStorage.setItem(LSKEY,JSON.stringify(ticks)); }catch(e){} renderManual(); }
+renderManual(); runAll();
+</script>
+</body>
+</html>
